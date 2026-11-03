@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# never commit the challenge data or the answers
+data/
+dev/
+*.jsonl
+example/
+
+# secrets
+.env
+.env.local
+
+# outputs / run artifacts
+out.json
+output.json
+usage.jsonl
+
+# os / editor
+.DS_Store
+Thumbs.db

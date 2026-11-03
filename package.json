@@ -1,0 +1,21 @@
+{
+  "name": "xpert-cold-start",
+  "version": "0.1.0",
+  "description": "Cold Start challenge solution: read a person's WhatsApp and produce output.json",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^3.0.2",
+    "ai": "^6.0.5",
+    "zod": "^4.0.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
