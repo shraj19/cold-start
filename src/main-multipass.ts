@@ -18,8 +18,8 @@ async function main(): Promise<void> {
   console.error(`Loaded ${input.chats.length} chats, ${input.messages.length} messages`);
 
   const result = await runPipeline(input.chats, input.messages, input.seed, {
-    concurrency: 2, // Low concurrency for rate-limited APIs
-    delayMs: 5000, // 5 second delay between batches (Gemini free tier: 15 req/min)
+    batchSize: 1, // Back to per-chat for quality
+    delayMs: 6000, // 6 second delay (allows ~10 req/min, well under Gemini's 15)
     skipPass3: false,
     exampleDir: exampleDir || undefined,
   });
