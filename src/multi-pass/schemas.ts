@@ -31,11 +31,13 @@ export const relationshipSignalSchema = z.object({
 });
 
 export const loopCandidateSchema = z.object({
-  msg_id: z.string(),
-  text_snippet: z.string().max(100).describe("First 100 chars of message"),
+  msg_id: z.string().describe("Message ID that creates the loop"),
+  text_snippet: z.string().max(200).describe("First 200 chars of message"),
   type: z.enum(LOOP_TYPES),
-  owner: z.string().describe("Person ID or 'ME'"),
+  owner: z.string().describe("Person ID or 'ME' who must act"),
   due: z.string().nullable().describe("ISO date if mentioned"),
+  status: z.enum(LOOP_STATUSES).describe("open if no resolution, done if completed, dropped if cancelled"),
+  closing_msg: z.string().nullable().describe("Message ID that closes/resolves this loop, if any"),
   confidence: z.number().min(0).max(1),
 });
 

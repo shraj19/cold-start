@@ -33,15 +33,17 @@ Your job:
 
 4. LOOP DECISIONS - Consolidate and decide status
    - Merge related messages into single loop (use related_msg_ids)
+   - TRUST the status from Pass 1 if it shows done or dropped with a closing message
    - Decide status:
      * open: still pending, needs action
-     * done: explicitly completed in the conversation
-     * dropped: abandoned, cancelled, or superseded
+     * done: explicitly completed in the conversation (look for: "Done", "Sent", "Booked", answer given to question, task completed)
+     * dropped: abandoned, cancelled, or superseded (look for: "Never mind", "Got it elsewhere", no longer needed)
    - For OPEN loops only, decide help action:
      * assist: Assistant can take action (search, draft, book). help_detail = specific next step
      * remind: Only user can do it. help_detail = ISO datetime like "2026-10-25T09:00:00Z"
      * leave: Someone else owns it or too personal. help_detail = brief reason why
    - Title should be clear action item, max 60 chars
+   - Include ALL loops, even those marked done/dropped
 
 5. GOAL DECISIONS - Identify user's goals
    - Look for patterns across chats (marathon mentioned multiple times = real goal)
@@ -93,7 +95,10 @@ function formatPass1ForLLM(pass1Results: Pass1Output[]): string {
     if (p1.loop_candidates.length > 0) {
       lines.push(`\nChat ${p1.chat_id}:`);
       for (const loop of p1.loop_candidates) {
-        lines.push(`  [${loop.msg_id}] ${loop.type} by ${loop.owner}: "${loop.text_snippet}" ${loop.due ? `(due: ${loop.due})` : ""} conf=${loop.confidence.toFixed(2)}`);
+        const statusInfo = loop.status !== "open" 
+          ? ` [${loop.status.toUpperCase()}${loop.closing_msg ? ` by ${loop.closing_msg}` : ""}]`
+          : "";
+        lines.push(`  [${loop.msg_id}] ${loop.type} by ${loop.owner}: "${loop.text_snippet}" ${loop.due ? `(due: ${loop.due})` : ""}${statusInfo} conf=${loop.confidence.toFixed(2)}`);
       }
     }
   }
