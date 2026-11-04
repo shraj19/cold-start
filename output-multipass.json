@@ -101,7 +101,17 @@
   ],
   "goals": [
     {
-      "title": "Plan family vacation to Coorg in December",
+      "title": "Brightside to 10 retainer clients by March",
+      "area": "work",
+      "type": "milestone",
+      "horizon": "1yr",
+      "evidence": [
+        "M016",
+        "M018"
+      ]
+    },
+    {
+      "title": "Plan family trip to Coorg in December",
       "area": "experiences",
       "type": "experience",
       "horizon": "3mo",
@@ -112,21 +122,11 @@
       ]
     },
     {
-      "title": "Brightside to 10 retainer clients by March",
-      "area": "work",
-      "type": "milestone",
-      "horizon": "1yr",
-      "evidence": [
-        "M018"
-      ]
-    },
-    {
-      "title": "Run a half marathon in January",
+      "title": "Run a half marathon",
       "area": "health",
       "type": "milestone",
       "horizon": "3mo",
       "evidence": [
-        "M026",
         "M027"
       ]
     }
@@ -138,22 +138,22 @@
       "owner": "ME",
       "chat_id": "C01",
       "source_msg": "M002",
-      "due": "2026-10-23T00:00:00Z",
+      "due": "2026-10-23",
       "status": "open",
       "closed_by": null,
       "help": {
         "action": "assist",
-        "next_step": "Search Coorg homestay and travel options",
+        "next_step": "Search Coorg homestay and flight options",
         "needs_yes": true
       }
     },
     {
-      "title": "Book gas cylinder / cooking supplies",
+      "title": "Gas cylinder booking",
       "type": "commitment",
       "owner": "ME",
       "chat_id": "C02",
       "source_msg": "M010",
-      "due": "2026-10-22T00:00:00Z",
+      "due": "2026-10-22",
       "status": "done",
       "closed_by": "M010"
     },
@@ -172,12 +172,26 @@
       }
     },
     {
+      "title": "Decide on Zest 60k/month pricing",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C04",
+      "source_msg": "M016",
+      "due": "2026-10-26",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "remind_at": "2026-10-26T09:00:00Z"
+      }
+    },
+    {
       "title": "Send Orbit October invoice with GST",
       "type": "commitment",
       "owner": "P05",
       "chat_id": "C04",
       "source_msg": "M017",
-      "due": "2026-10-20T00:00:00Z",
+      "due": "2026-10-20",
       "status": "open",
       "closed_by": null,
       "help": {
@@ -186,12 +200,12 @@
       }
     },
     {
-      "title": "Complete Halcyon pitch deck and evaluate Zest",
-      "type": "commitment",
+      "title": "Complete Halcyon pitch deck",
+      "type": "deadline",
       "owner": "ME",
       "chat_id": "C04",
       "source_msg": "M018",
-      "due": "2026-10-24T00:00:00Z",
+      "due": "2026-10-24",
       "status": "open",
       "closed_by": null,
       "help": {
@@ -200,21 +214,21 @@
       }
     },
     {
-      "title": "Send brochure proofs",
+      "title": "Brochure printing proofs delivery",
       "type": "commitment",
       "owner": "P07",
       "chat_id": "C05",
       "source_msg": "M023",
-      "due": "2026-10-21T00:00:00Z",
+      "due": "2026-10-21",
       "status": "open",
       "closed_by": null,
       "help": {
-        "action": "leave",
-        "reason": "P07 is handling it"
+        "action": "remind",
+        "remind_at": "2026-10-21T18:00:00Z"
       }
     },
     {
-      "title": "Send running training plan",
+      "title": "Send training plan for half marathon",
       "type": "commitment",
       "owner": "ME",
       "chat_id": "C06",
@@ -224,7 +238,7 @@
       "closed_by": null,
       "help": {
         "action": "assist",
-        "next_step": "Draft or retrieve running training plan to send",
+        "next_step": "Draft 4-runs-a-week training plan for half marathon",
         "needs_yes": true
       }
     }

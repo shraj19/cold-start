@@ -150,8 +150,11 @@ function formatSeedForLLM(seed: Seed): string {
  */
 export async function runPass2(
   pass1Results: Pass1Output[],
-  seed: Seed
+  seed: Seed,
+  options: { examples?: string } = {}
 ): Promise<Pass2Output> {
+  const { examples = "" } = options;
+  
   const pass1Summary = formatPass1ForLLM(pass1Results);
   const seedSummary = formatSeedForLLM(seed);
   
@@ -161,7 +164,14 @@ export async function runPass2(
     p1.participants.forEach(p => allPersonIds.add(p));
   }
   
-  const prompt = `${seedSummary}
+  let prompt = "";
+  
+  // Add few-shot examples if available
+  if (examples) {
+    prompt += examples + "\n\n=== NOW SYNTHESIZE THIS DATA ===\n\n";
+  }
+  
+  prompt += `${seedSummary}
 
 ${pass1Summary}
 
@@ -172,7 +182,7 @@ ${[...allPersonIds].sort().join(", ")}
 1. Decide circle for each person (use seed circles as ground truth)
 2. Create organisation list (use seed orgs + detect "home" if needed)
 3. Link people to organisations where appropriate
-4. Consolidate loops - merge related messages, decide status
+4. Consolidate loops - merge related messages, decide status (IMPORTANT: mark done/dropped if conversation shows completion)
 5. Identify goals (max 10)
 6. Flag anything uncertain (confidence < 0.6) for investigation`;
 

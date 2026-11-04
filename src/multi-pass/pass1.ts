@@ -6,6 +6,9 @@ import { generate } from "../llm.js";
 import { pass1OutputSchema, type Pass1Output } from "./schemas.js";
 import type { Chat, Message } from "../types.js";
 
+// Will be set by runPass1 if examples are provided
+let fewShotExamples: string = "";
+
 const SYSTEM_PROMPT = `You are extracting structured information from a WhatsApp chat.
 Your job is to identify:
 
@@ -15,21 +18,34 @@ Your job is to identify:
    - Rate confidence 0-1 (0.9+ = very clear, 0.5-0.7 = some signals, <0.5 = just guessing)
 
 2. LOOP CANDIDATES - Things that need tracking:
-   - commitment: "I'll do X", "Will send by tomorrow"
-   - question: Unanswered questions
-   - deadline: Explicit dates/times for deliverables
+   - commitment: "I'll do X", "Will send by tomorrow", "I'll handle it"
+   - question: Unanswered questions that need response
+   - deadline: Explicit dates/times for deliverables ("due Friday", "by Monday")
    - followup: "Did you check...?", "Any update on...?"
    - Include message ID, who owns it (ME or person ID), any due date mentioned
-   
+   - IMPORTANT: Also note if a commitment appears to be COMPLETED or DROPPED later in the conversation
+
 3. TOPICS - Main subjects discussed (max 5)
 
-4. GOAL HINTS - Any explicit goals or aspirations (e.g., "want to run a marathon", "planning to expand business")
+4. GOAL HINTS - Any explicit goals or aspirations mentioned (e.g., "want to run a marathon", "planning to expand business")
 
-Be thorough but precise. Only include signals you actually see, not assumptions.
-For Hindi/Hinglish messages, translate context clues appropriately.`;
+IMPORTANT PATTERNS:
+- "I'll send you X" followed by "already shared via Y" → commitment was DROPPED (superseded)
+- Question followed by clear answer → mark as answered
+- "Done", "Booked", "Sent" → commitment COMPLETED
+- "kal" / "tomorrow" / "this week" → extract relative date if possible
+- Hindi/Hinglish: "bhej dunga" = will send, "kar diya" = done, "theek hai" = ok
+
+Be thorough but precise. Only include signals you actually see, not assumptions.`;
 
 function buildPrompt(chat: Chat, messages: Message[]): string {
   const lines: string[] = [];
+  
+  // Add few-shot examples if available
+  if (fewShotExamples) {
+    lines.push(fewShotExamples);
+    lines.push("\n=== NOW EXTRACT FROM THIS CHAT ===\n");
+  }
   
   lines.push(`=== CHAT: ${chat.name} ===`);
   lines.push(`Type: ${chat.is_group ? "Group" : "1:1 chat"}`);
@@ -86,9 +102,13 @@ export async function extractFromChat(
 export async function runPass1(
   chats: Chat[],
   messagesByChat: Map<string, Message[]>,
-  options: { concurrency?: number } = {}
+  options: { concurrency?: number; examples?: string; delayMs?: number } = {}
 ): Promise<Pass1Output[]> {
-  const { concurrency = 10 } = options;
+  const { concurrency = 10, examples = "", delayMs = 0 } = options;
+  
+  // Set few-shot examples for this run
+  fewShotExamples = examples;
+  
   const results: Pass1Output[] = [];
   
   // Process in batches
@@ -103,7 +123,16 @@ export async function runPass1(
     
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);
+    
+    // Add delay between batches to respect rate limits
+    if (delayMs > 0 && i + concurrency < chats.length) {
+      console.error(`  Waiting ${delayMs / 1000}s to respect rate limits...`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
   }
+  
+  // Clear examples after run
+  fewShotExamples = "";
   
   return results;
 }
