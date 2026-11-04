@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.2",
+    "@t3-oss/env-core": "^0.13.11",
     "ai": "^6.0.5",
+    "dotenv": "^18.0.9",
     "zod": "^4.0.8"
   },
   "devDependencies": {

@@ -1,0 +1,232 @@
+{
+  "people": [
+    {
+      "id": "P01",
+      "circle": "spouse"
+    },
+    {
+      "id": "P02",
+      "circle": "staff",
+      "links": [
+        {
+          "organisation": "home",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "circle": "staff",
+      "links": [
+        {
+          "organisation": "home",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P04",
+      "circle": "child"
+    },
+    {
+      "id": "P05",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "brightside",
+          "link": "runs"
+        }
+      ]
+    },
+    {
+      "id": "P06",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "brightside",
+          "link": "runs"
+        }
+      ]
+    },
+    {
+      "id": "P07",
+      "circle": "vendor"
+    },
+    {
+      "id": "P08",
+      "circle": "friend"
+    }
+  ],
+  "organisations": [
+    {
+      "id": "brightside",
+      "name": "Brightside Design",
+      "type": "company",
+      "side": "work",
+      "role": "owner"
+    },
+    {
+      "id": "home",
+      "name": "Home",
+      "type": "residence",
+      "side": "home",
+      "role": "owner"
+    }
+  ],
+  "chats": [
+    {
+      "chat_id": "C01",
+      "person": "P01"
+    },
+    {
+      "chat_id": "C02",
+      "person": "P02"
+    },
+    {
+      "chat_id": "C03",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C04",
+      "organisation": "brightside"
+    },
+    {
+      "chat_id": "C05",
+      "person": "P07"
+    },
+    {
+      "chat_id": "C06",
+      "person": "P08"
+    }
+  ],
+  "goals": [
+    {
+      "title": "Plan family vacation to Coorg in December",
+      "area": "experiences",
+      "type": "experience",
+      "horizon": "3mo",
+      "evidence": [
+        "M002",
+        "M004",
+        "M005"
+      ]
+    },
+    {
+      "title": "Brightside to 10 retainer clients by March",
+      "area": "work",
+      "type": "milestone",
+      "horizon": "1yr",
+      "evidence": [
+        "M018"
+      ]
+    },
+    {
+      "title": "Run a half marathon in January",
+      "area": "health",
+      "type": "milestone",
+      "horizon": "3mo",
+      "evidence": [
+        "M026",
+        "M027"
+      ]
+    }
+  ],
+  "open_loops": [
+    {
+      "title": "Book Coorg tickets and homestay",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C01",
+      "source_msg": "M002",
+      "due": "2026-10-23T00:00:00Z",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Search Coorg homestay and travel options",
+        "needs_yes": true
+      }
+    },
+    {
+      "title": "Book gas cylinder / cooking supplies",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C02",
+      "source_msg": "M010",
+      "due": "2026-10-22T00:00:00Z",
+      "status": "done",
+      "closed_by": "M010"
+    },
+    {
+      "title": "Call plumber for leaking bathroom tap",
+      "type": "commitment",
+      "owner": "P01",
+      "chat_id": "C03",
+      "source_msg": "M014",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "leave",
+        "reason": "P01 is handling it"
+      }
+    },
+    {
+      "title": "Send Orbit October invoice with GST",
+      "type": "commitment",
+      "owner": "P05",
+      "chat_id": "C04",
+      "source_msg": "M017",
+      "due": "2026-10-20T00:00:00Z",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "leave",
+        "reason": "P05 is handling it"
+      }
+    },
+    {
+      "title": "Complete Halcyon pitch deck and evaluate Zest",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C04",
+      "source_msg": "M018",
+      "due": "2026-10-24T00:00:00Z",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "remind_at": "2026-10-24T09:00:00Z"
+      }
+    },
+    {
+      "title": "Send brochure proofs",
+      "type": "commitment",
+      "owner": "P07",
+      "chat_id": "C05",
+      "source_msg": "M023",
+      "due": "2026-10-21T00:00:00Z",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "leave",
+        "reason": "P07 is handling it"
+      }
+    },
+    {
+      "title": "Send running training plan",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C06",
+      "source_msg": "M027",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Draft or retrieve running training plan to send",
+        "needs_yes": true
+      }
+    }
+  ]
+}

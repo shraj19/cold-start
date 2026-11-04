@@ -9,7 +9,7 @@ export interface Chat {
   chat_id: string;
   name: string;
   is_group: boolean;
-  participants: string[]; // person ids; Arjun is "ME"
+  participants: string[]; // person ids; "ME"
 }
 
 export type MessageKind =

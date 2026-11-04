@@ -52,6 +52,7 @@ export const ORG_ROLES = [
 ] as const;
 
 export const LINK_TYPES = ["runs", "supports"] as const;
+export const ORG_LINKS = LINK_TYPES; // Alias for clarity
 
 export const GOAL_AREAS = [
   "self",
