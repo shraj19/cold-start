@@ -41,6 +41,41 @@ function logUsage(
 }
 
 /**
+ * Retry with exponential backoff for rate limit errors
+ */
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 5,
+  baseDelayMs: number = 10000,
+): Promise<T> {
+  let lastError: Error | undefined;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      
+      // Check if rate limit error (429)
+      const isRateLimit = lastError.message.includes("429") || 
+                          lastError.message.includes("Too Many Requests") ||
+                          lastError.message.includes("rate limit");
+      
+      if (!isRateLimit || attempt === maxRetries) {
+        throw new Error(`Failed after ${attempt + 1} attempts. Last error: ${lastError.message}`);
+      }
+      
+      // Exponential backoff: 10s, 20s, 40s, 80s, 160s
+      const delay = baseDelayMs * Math.pow(2, attempt);
+      console.error(`  Rate limited (attempt ${attempt + 1}/${maxRetries + 1}), waiting ${delay / 1000}s...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError;
+}
+
+/**
  * Generate a structured object from a prompt using the LLM.
  * Uses AI SDK v6's generateText + Output.object() for type-safe, validated output.
  */
@@ -54,12 +89,14 @@ export async function generate<T>(
 ): Promise<T> {
   const start = Date.now();
 
-  const result = await generateText({
-    model,
-    output: Output.object({ schema }),
-    prompt,
-    system: options?.system,
-    temperature: options?.temperature ?? 0,
+  const result = await withRetry(async () => {
+    return await generateText({
+      model,
+      output: Output.object({ schema }),
+      prompt,
+      system: options?.system,
+      temperature: options?.temperature ?? 0,
+    });
   });
 
   logUsage("generateText+Output.object", result.usage, Date.now() - start);
@@ -82,12 +119,14 @@ export async function generateArray<T>(
 ): Promise<T[]> {
   const start = Date.now();
 
-  const result = await generateText({
-    model,
-    output: Output.array({ element: elementSchema }),
-    prompt,
-    system: options?.system,
-    temperature: options?.temperature ?? 0,
+  const result = await withRetry(async () => {
+    return await generateText({
+      model,
+      output: Output.array({ element: elementSchema }),
+      prompt,
+      system: options?.system,
+      temperature: options?.temperature ?? 0,
+    });
   });
 
   logUsage("generateText+Output.array", result.usage, Date.now() - start);
@@ -107,11 +146,13 @@ export async function generatePlainText(
 ): Promise<string> {
   const start = Date.now();
 
-  const result = await generateText({
-    model,
-    prompt,
-    system: options?.system,
-    temperature: options?.temperature ?? 0,
+  const result = await withRetry(async () => {
+    return await generateText({
+      model,
+      prompt,
+      system: options?.system,
+      temperature: options?.temperature ?? 0,
+    });
   });
 
   logUsage("generateText", result.usage, Date.now() - start);
