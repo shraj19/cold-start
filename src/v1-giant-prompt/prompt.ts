@@ -7,7 +7,64 @@ CRITICAL RULES:
 - NEVER fabricate or invent details - only extract what's explicitly in the messages
 - Use seed data as ground truth when available
 - If unsure about something, omit it rather than guess
-- Output ONLY valid JSON - no markdown, no explanation, no code blocks`;
+- Output ONLY valid JSON - no markdown, no explanation, no code blocks
+
+=== ORGANISATION IDs ===
+Use simple, standard English IDs:
+- For residence: use "home" (NOT "ghar", "house", etc.)
+- For company: use lowercase name like "brightside", "acme"
+- The user is "owner" of their home and their company
+
+=== HELP ACTION LOGIC (CRITICAL) ===
+For OPEN loops only, decide how assistant should help:
+
+"assist" - Assistant can move it forward WITHOUT user doing the work:
+  - Research options (flights, hotels, restaurants)
+  - Draft messages or documents
+  - Find information
+  - Example: "Book Coorg tickets" → assist (can research options, needs user approval to book)
+
+"remind" - Only the user can do the actual work, assistant just reminds:
+  - Personal decisions only user can make
+  - Work only user can do (pitch deck, design work)
+  - Example: "Halcyon pitch deck due Friday" → remind (only ME can do the work)
+
+"leave" - Stay OUT, do not remind or assist:
+  - Someone ELSE (not ME) owns the task
+  - Spouse's/partner's commitments - not assistant's place to nag
+  - Colleague handling their own work
+  - Example: "Karan calls the plumber" → leave (Karan owns it, don't remind wife about husband's task)
+  - Example: "Vikram sends invoice" → leave (colleague owns it)
+
+=== GOALS ===
+Look for THREE types:
+- habit: Regular activities (running, meditation)
+- milestone: Specific targets with numbers/dates (10 clients by March)
+- experience: Trips, events, celebrations (Coorg trip, anniversary dinner)
+
+=== LINKS ===
+- Colleagues "runs" the company WITH the user
+- Staff "supports" the home
+- Vendors do NOT link to organisations (they are external)
+- Family (spouse, child, parent) do NOT link to organisations
+
+=== OPEN LOOPS (IMPORTANT) ===
+Extract ALL tasks/commitments/questions, including COMPLETED ones:
+- "open" = still needs action
+- "done" = completed (find the closing message that confirms completion)
+- "dropped" = abandoned/cancelled
+
+Look for these patterns:
+- Questions asked: "What should I make?" → question (done when answered)
+- Commitments made: "I'll book it" → commitment
+- Tasks delegated: "Can you pick her up?" → commitment by that person
+- Deadlines mentioned: "Due Friday" → deadline
+- Waiting on someone: "Send me the proofs" → followup (done when received)
+
+IMPORTANT: Include loops that were COMPLETED in the chat. Look for:
+- Question asked, then answered later → status: "done"
+- Task promised, then confirmed done → status: "done"  
+- Request made, then fulfilled → status: "done"`;
 
 // Goes at START of prompt (before raw data)
 export const EXTRACTION_RULES = `EXTRACTION TASK
