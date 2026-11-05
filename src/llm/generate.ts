@@ -1,6 +1,6 @@
 // LLM generation functions with self-healing for remote execution
 
-import { generateText } from "ai";
+import { generateText, type LanguageModel } from "ai";
 import { z } from "zod";
 import { appendFileSync } from "node:fs";
 import { model, modelName } from "./client.js";
@@ -12,6 +12,8 @@ export interface GenerateOptions {
   maxRetries?: number;
   /** Max attempts for schema fix loop (default: 3) */
   maxFixAttempts?: number;
+  /** Custom model to use (defaults to env model) */
+  customModel?: LanguageModel;
 }
 
 function logUsage(
@@ -96,8 +98,9 @@ export async function generate<T>(
   schema: z.ZodType<T>,
   options: GenerateOptions = {}
 ): Promise<T> {
-  const { system, temperature = 0, maxRetries = 5, maxFixAttempts = 3 } = options;
+  const { system, temperature = 0, maxRetries = 5, maxFixAttempts = 3, customModel } = options;
   const start = Date.now();
+  const activeModel = customModel ?? model;
 
   // Use text generation + manual parse (more reliable than Output.object across providers)
   const jsonSystem = system
@@ -118,7 +121,7 @@ export async function generate<T>(
       
       const textResult = await withRetry(
         async () => generateText({ 
-          model, 
+          model: activeModel, 
           prompt: currentPrompt, 
           system: jsonSystem, 
           temperature 
@@ -192,11 +195,12 @@ export async function generatePlainText(
   prompt: string,
   options: GenerateOptions = {}
 ): Promise<string> {
-  const { system, temperature = 0, maxRetries = 5 } = options;
+  const { system, temperature = 0, maxRetries = 5, customModel } = options;
   const start = Date.now();
+  const activeModel = customModel ?? model;
 
   const result = await withRetry(
-    () => generateText({ model, prompt, system, temperature }),
+    () => generateText({ model: activeModel, prompt, system, temperature }),
     { maxRetries }
   );
 

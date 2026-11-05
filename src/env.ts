@@ -17,6 +17,15 @@ export const env = createEnv({
     
     // Model identifier (e.g., "gemini-2.0-flash", "gpt-4o-mini")
     LLM_MODEL: z.string().min(1, "LLM_MODEL cannot be empty"),
+
+    // Optional: Groq API key (if set, can use createGroqModel())
+    GROQ_API_KEY: z.string().optional(),
+    
+    // Optional: Together AI API key
+    TOGETHER_API_KEY: z.string().optional(),
+    
+    // Optional: OpenRouter API key  
+    OPENROUTER_API_KEY: z.string().optional(),
   },
   
   // Tell the library where to find env vars (Node.js process.env)
