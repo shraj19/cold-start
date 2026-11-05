@@ -1,6 +1,6 @@
 // LLM generation functions with self-healing for remote execution
 
-import { generateText, type LanguageModel } from "ai";
+import { generateText, Output, type LanguageModel } from "ai";
 import { z } from "zod";
 import { appendFileSync } from "node:fs";
 import { model, modelName } from "./client.js";
@@ -14,6 +14,8 @@ export interface GenerateOptions {
   maxFixAttempts?: number;
   /** Custom model to use (defaults to env model) */
   customModel?: LanguageModel;
+  /** Force text-only mode (skip structured output) */
+  useTextMode?: boolean;
 }
 
 function logUsage(
@@ -87,22 +89,52 @@ function formatZodErrors(error: z.ZodError): string {
 }
 
 /**
- * Generate a structured object with self-healing
+ * Generate a structured object with schema enforcement
  * 
- * Strategy:
- * 1. Try text generation + manual JSON parse (more reliable across providers)
- * 2. If schema invalid, retry with error feedback
+ * Uses generateText with Output.object() for structured output
  */
 export async function generate<T>(
   prompt: string,
   schema: z.ZodType<T>,
   options: GenerateOptions = {}
 ): Promise<T> {
-  const { system, temperature = 0, maxRetries = 5, maxFixAttempts = 3, customModel } = options;
+  const { system, temperature = 0, maxRetries = 5, maxFixAttempts = 3, customModel, useTextMode = false } = options;
   const start = Date.now();
   const activeModel = customModel ?? model;
 
-  // Use text generation + manual parse (more reliable than Output.object across providers)
+  // Try structured output first (generateText with Output.object)
+  if (!useTextMode) {
+    try {
+      console.error(`  Attempt 1/${maxFixAttempts} (structured output)...`);
+      
+      const result = await withRetry(
+        async () => generateText({
+          model: activeModel,
+          prompt,
+          system,
+          output: Output.object({ schema }),
+          temperature,
+        }),
+        { maxRetries }
+      );
+
+      // In AI SDK v6, the structured output is in result.output
+      if (result && result.output !== undefined) {
+        logUsage("generate_structured", result.usage, Date.now() - start, { mode: "structured" });
+        console.error(`  Success with structured output`);
+        return result.output as T;
+      }
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.error(`  Structured output failed: ${errMsg.slice(0, 200)}`);
+      logError("structured_output_failed", err);
+      // Fall through to text mode
+    }
+  }
+
+  // Fallback: Use text generation + manual parse
+  console.error(`  Falling back to text mode...`);
+  
   const jsonSystem = system
     ? `${system}\n\nIMPORTANT: Respond with ONLY valid JSON. No markdown, no explanation, no code blocks, just the raw JSON object.`
     : "Respond with ONLY valid JSON. No markdown, no explanation, no code blocks, just the raw JSON object.";
@@ -117,7 +149,7 @@ export async function generate<T>(
         : `${prompt}\n\n---\nYour previous response had schema validation errors:\n${lastErrors}\n\nPlease fix these issues and return valid JSON.`;
 
     try {
-      console.error(`  Attempt ${attempt + 1}/${maxFixAttempts}...`);
+      console.error(`  Text attempt ${attempt + 1}/${maxFixAttempts}...`);
       
       const textResult = await withRetry(
         async () => generateText({ 
@@ -155,8 +187,8 @@ export async function generate<T>(
       // Validate against schema
       const result = schema.safeParse(parsed);
       if (result.success) {
-        logUsage("generate", textResult.usage, Date.now() - start, { fixAttempts: attempt + 1 });
-        console.error(`  Success on attempt ${attempt + 1}`);
+        logUsage("generate_text", textResult.usage, Date.now() - start, { fixAttempts: attempt + 1, mode: "text" });
+        console.error(`  Success on text attempt ${attempt + 1}`);
         return result.data;
       }
 

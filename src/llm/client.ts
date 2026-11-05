@@ -38,6 +38,10 @@ export const PROVIDERS = {
     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
     models: ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"],
   },
+  deepseek: {
+    baseURL: "https://api.deepseek.com/v1",
+    models: ["deepseek-chat"],
+  },
   groq: {
     baseURL: "https://api.groq.com/openai/v1",
     // Updated Nov 2026 - old llama models deprecated
@@ -106,6 +110,17 @@ export function createGroqModel(modelName?: string, apiKey?: string): LanguageMo
 export function createGeminiModel(modelName?: string, apiKey?: string): LanguageModel {
   const key = apiKey ?? env.LLM_API_KEY;
   return createModelFromProvider("gemini", key, modelName ?? "gemini-2.0-flash");
+}
+
+/**
+ * Create DeepSeek model (convenience function)
+ */
+export function createDeepSeekModel(modelName?: string, apiKey?: string): LanguageModel {
+  const key = apiKey ?? env.DEEPSEEK_API_KEY;
+  if (!key) {
+    throw new Error("DEEPSEEK_API_KEY not set in environment and no apiKey provided");
+  }
+  return createModelFromProvider("deepseek", key, modelName ?? "deepseek-chat");
 }
 
 /**

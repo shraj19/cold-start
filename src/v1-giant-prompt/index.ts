@@ -4,6 +4,7 @@
 // Uses raw text directly to avoid parse/serialize roundtrip
 
 import { generate } from "../llm/index.js";
+import { createDeepSeekModel } from "../llm/client.js";
 import { outputSchema, type Output } from "../types/index.js";
 import { loadExample, type RawInput, type ExampleData } from "../io/index.js";
 import { SYSTEM_PROMPT, EXTRACTION_RULES, OUTPUT_REMINDER } from "./prompt.js";

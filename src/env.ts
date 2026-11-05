@@ -21,6 +21,9 @@ export const env = createEnv({
     // Optional: Groq API key (if set, can use createGroqModel())
     GROQ_API_KEY: z.string().optional(),
     
+    // Optional: DeepSeek API key
+    DEEPSEEK_API_KEY: z.string().optional(),
+    
     // Optional: Together AI API key
     TOGETHER_API_KEY: z.string().optional(),
     
