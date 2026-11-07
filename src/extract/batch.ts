@@ -13,8 +13,8 @@ export interface BatchOptions {
 }
 
 const DEFAULT_OPTIONS: BatchOptions = {
-  windowSize: 15,   // Small for testing merge with example (29 msgs -> 3 batches)
-  overlap: 5,       // Reasonable overlap for context continuity
+  windowSize: 1000,  // Production: large batches to minimize API calls
+  overlap: 100,      // 10% overlap for context continuity
 };
 
 /**
