@@ -13,8 +13,8 @@ export interface BatchOptions {
 }
 
 const DEFAULT_OPTIONS: BatchOptions = {
-  windowSize: 1000,  // ~40K tokens input, safe for 128K context
-  overlap: 100,      // 10% overlap for continuity
+  windowSize: 15,   // Small for testing merge with example (29 msgs -> 3 batches)
+  overlap: 5,       // Reasonable overlap for context continuity
 };
 
 /**

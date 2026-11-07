@@ -98,7 +98,7 @@ function formatChats(chats: Chat[]): string {
     .join('\n');
 }
 
-function buildUserPrompt(batch: Batch, seed: Seed): string {
+function buildUserPrompt(batch: Batch, seed: Seed, priorLoops?: Array<{source_msg: string; title: string; owner: string}>): string {
   const knownCircles = Object.entries(seed.circles)
     .map(([id, circle]) => `${id}: ${circle}`)
     .join(', ') || 'none';
@@ -109,11 +109,20 @@ function buildUserPrompt(batch: Batch, seed: Seed): string {
     .map(g => `"${g.title}" (${g.area})`)
     .join(', ') || 'none';
 
+  let priorLoopsSection = '';
+  if (priorLoops && priorLoops.length > 0) {
+    priorLoopsSection = `\n<prior-open-loops>
+These loops were found in earlier messages (source_msg outside this batch). 
+If you see evidence they're now DONE or DROPPED, include them with updated status and closed_by.
+${priorLoops.map(l => `- ${l.source_msg}: "${l.title}" (owner: ${l.owner})`).join('\n')}
+</prior-open-loops>`;
+  }
+
   return `<seed-data>
 Known circles (use exactly): ${knownCircles}
 Known organizations: ${knownOrgs}
 Known goals: ${seedGoals}
-</seed-data>
+</seed-data>${priorLoopsSection}
 
 <chats>
 ${formatChats(batch.chats)}
@@ -129,6 +138,94 @@ Extract all people, organizations, chats, goals, and loops from these messages.`
 // ============================================================
 // Parse Response
 // ============================================================
+
+/** Fix common LLM mistakes before schema validation */
+function preprocessData(data: Record<string, unknown>): Record<string, unknown> {
+  // Fix goal areas - map common mistakes to valid values
+  const areaMap: Record<string, string> = {
+    travel: 'experiences',
+    vacation: 'experiences',
+    leisure: 'experiences',
+    trip: 'experiences',
+    family: 'spouse',
+    career: 'work',
+    business: 'work',
+    fitness: 'health',
+    wellness: 'health',
+    money: 'finances',
+    personal: 'self',
+  };
+  
+  if (Array.isArray(data.goals)) {
+    data.goals = data.goals.map((g: Record<string, unknown>) => {
+      if (typeof g.area === 'string' && areaMap[g.area.toLowerCase()]) {
+        g.area = areaMap[g.area.toLowerCase()];
+      }
+      return g;
+    });
+  }
+  
+  // Fix org types - map invalid to valid values
+  const validOrgTypes = new Set(['company', 'residence', 'vacation home', 'workspace', 'society', 'school', 'other']);
+  const orgTypeMap: Record<string, string> = {
+    vendor: 'company',
+    supplier: 'company',
+    client: 'company',
+    business: 'company',
+    home: 'residence',
+    house: 'residence',
+  };
+  
+  // Fix org roles
+  const validOrgRoles = new Set(['owner', 'partner', 'helper', 'resident', 'parent', 'member', 'other']);
+  const orgRoleMap: Record<string, string> = {
+    client: 'member',
+    customer: 'member',
+    employee: 'member',
+    staff: 'helper',
+  };
+  
+  if (Array.isArray(data.orgs)) {
+    data.orgs = data.orgs.map((o: Record<string, unknown>) => {
+      if (typeof o.type === 'string') {
+        const t = o.type.toLowerCase();
+        if (!validOrgTypes.has(t)) {
+          o.type = orgTypeMap[t] ?? 'other';
+        }
+      }
+      if (typeof o.role === 'string') {
+        const r = o.role.toLowerCase();
+        if (!validOrgRoles.has(r)) {
+          o.role = orgRoleMap[r] ?? 'other';
+        }
+      }
+      return o;
+    });
+  }
+  
+  // Fix person_links - only "runs" and "supports" are valid
+  const linkMap: Record<string, string> = {
+    member: 'supports',
+    works: 'runs',
+    employee: 'runs',
+    colleague: 'runs',
+    owner: 'runs',
+  };
+  
+  if (Array.isArray(data.person_links)) {
+    data.person_links = data.person_links.map((l: Record<string, unknown>) => {
+      if (typeof l.link === 'string') {
+        const link = l.link.toLowerCase();
+        if (link !== 'runs' && link !== 'supports') {
+          l.link = linkMap[link] ?? 'supports';
+        }
+      }
+      return l;
+    });
+  }
+  
+  return data;
+}
 
 function parseResponse(text: string): { thinking: string; data: BatchOutput } {
   const thinkingMatch = text.match(/<thinking>([\s\S]*?)<\/thinking>/);
@@ -147,7 +244,8 @@ function parseResponse(text: string): { thinking: string; data: BatchOutput } {
   }
 
   try {
-    const parsed = JSON.parse(jsonMatch[0]);
+    let parsed = JSON.parse(jsonMatch[0]);
+    parsed = preprocessData(parsed);  // Fix common mistakes
     const validated = batchOutputSchema.parse(parsed);
     return { thinking, data: validated };
   } catch (err) {
@@ -160,15 +258,22 @@ function parseResponse(text: string): { thinking: string; data: BatchOutput } {
 // Main Extraction
 // ============================================================
 
+export interface PriorLoop {
+  source_msg: string;
+  title: string;
+  owner: string;
+}
+
 export async function extractBatchCot(
   batch: Batch,
   seed: Seed,
   batchNum: number,
-  totalBatches: number
+  totalBatches: number,
+  priorLoops?: PriorLoop[]
 ): Promise<{ output: BatchOutput; thinking: string }> {
   console.error(`  Batch ${batchNum}/${totalBatches}: ${batch.messages.length} msgs, ${batch.chats.length} chats`);
   
-  const userPrompt = buildUserPrompt(batch, seed);
+  const userPrompt = buildUserPrompt(batch, seed, priorLoops);
   
   try {
     const text = await generatePlainText(userPrompt, { 

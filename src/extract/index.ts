@@ -2,7 +2,7 @@
 
 import type { Chat, Message, Seed, Output } from "../types/index.js";
 import { createBatches } from "./batch.js";
-import { extractBatchCot } from "./extract-cot.js";
+import { extractBatchCot, type PriorLoop } from "./extract-cot.js";
 import { mergeBatches } from "./merge.js";
 import type { BatchOutput } from "./types.js";
 
@@ -17,7 +17,8 @@ export type { BatchOutput } from "./types.js";
  * 
  * 1. Create sliding window batches (sorted by time)
  * 2. Extract with CoT reasoning (shows thinking, then extracts)
- * 3. Merge using confidence scores
+ * 3. Pass open loops forward to help later batches recognize closures
+ * 4. Merge using confidence scores
  */
 export async function extract(
   chats: Chat[],
@@ -28,11 +29,8 @@ export async function extract(
   console.error(`Input: ${chats.length} chats, ${messages.length} messages`);
   console.error(`Seed: ${Object.keys(seed.circles).length} circles, ${seed.organisations.length} orgs\n`);
 
-  // Create batches
-  const batches = createBatches(messages, chats, {
-    windowSize: 50,
-    overlap: 10,
-  });
+  // Create batches (uses DEFAULT_OPTIONS from batch.ts)
+  const batches = createBatches(messages, chats);
   console.error(`Created ${batches.length} batches\n`);
 
   // Extract from each batch with CoT
@@ -40,10 +38,40 @@ export async function extract(
   const results: BatchOutput[] = [];
   const allThinking: string[] = [];
   
+  // Track open loops to pass forward to later batches
+  const openLoops: PriorLoop[] = [];
+  
   for (let i = 0; i < batches.length; i++) {
-    const { output, thinking } = await extractBatchCot(batches[i]!, seed, i + 1, batches.length);
+    const batch = batches[i]!;
+    const batchMsgIds = new Set(batch.messages.map(m => m.id));
+    
+    // Filter prior loops to those whose source_msg is NOT in this batch
+    // (if source is in this batch, the LLM will see it directly)
+    const relevantPriorLoops = openLoops.filter(l => !batchMsgIds.has(l.source_msg));
+    
+    const { output, thinking } = await extractBatchCot(
+      batch, 
+      seed, 
+      i + 1, 
+      batches.length,
+      relevantPriorLoops.length > 0 ? relevantPriorLoops : undefined
+    );
     results.push(output);
     if (thinking) allThinking.push(`=== Batch ${i + 1} ===\n${thinking}`);
+    
+    // Collect open loops from this batch to pass forward
+    for (const loop of output.loops) {
+      if (loop.status === 'open') {
+        // Only add if not already tracked (dedupe by source_msg)
+        if (!openLoops.some(l => l.source_msg === loop.source_msg)) {
+          openLoops.push({
+            source_msg: loop.source_msg,
+            title: loop.title,
+            owner: loop.owner,
+          });
+        }
+      }
+    }
   }
 
   // Merge results

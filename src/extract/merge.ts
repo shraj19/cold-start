@@ -217,7 +217,9 @@ function mergeGoals(batches: BatchOutput[]): Goal[] {
 }
 
 /**
- * Merge loops - dedupe by source_msg, highest confidence wins
+ * Merge loops - dedupe by source_msg
+ * Status priority: done/dropped > open (terminal states win)
+ * Among same status, highest confidence wins
  */
 function mergeLoops(batches: BatchOutput[]): OpenLoop[] {
   // Collect all loops, dedupe by source_msg
@@ -234,8 +236,27 @@ function mergeLoops(batches: BatchOutput[]): OpenLoop[] {
   const loops: OpenLoop[] = [];
   
   for (const extracts of bySource.values()) {
-    // Pick highest confidence
-    const best = extracts.reduce((a, b) => a.confidence > b.confidence ? a : b);
+    // Separate by status - terminal states (done/dropped) take priority
+    const terminal = extracts.filter(e => e.status === "done" || e.status === "dropped");
+    const open = extracts.filter(e => e.status === "open");
+    
+    // If any batch marked it terminal, use that (more context = saw closing msg)
+    // Among terminal, prefer done > dropped, then highest confidence
+    let best: LoopExtract;
+    if (terminal.length > 0) {
+      // Prefer "done" over "dropped", then by confidence
+      const done = terminal.filter(e => e.status === "done");
+      const dropped = terminal.filter(e => e.status === "dropped");
+      
+      if (done.length > 0) {
+        best = done.reduce((a, b) => a.confidence > b.confidence ? a : b);
+      } else {
+        best = dropped.reduce((a, b) => a.confidence > b.confidence ? a : b);
+      }
+    } else {
+      // All open - pick highest confidence
+      best = open.reduce((a, b) => a.confidence > b.confidence ? a : b);
+    }
     
     // Convert to output format
     const loop: OpenLoop = {
