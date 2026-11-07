@@ -1,10 +1,10 @@
 // Store creation from input directory
 
 import { readInput } from "./read.js";
-import { VectorStore, createVectorStore } from "../store/index.js";
+import { DataStore, createStore } from "../store/index.js";
 
-/** Read input and create a VectorStore */
-export function loadStore(inputDir: string): VectorStore {
+/** Read input and create a DataStore */
+export function loadStore(inputDir: string): DataStore {
   const input = readInput(inputDir);
-  return createVectorStore(input);
+  return createStore(input);
 }

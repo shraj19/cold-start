@@ -14,7 +14,6 @@ function isRetryableError(error: Error): boolean {
     msg.includes("429") ||
     msg.includes("too many requests") ||
     msg.includes("rate limit") ||
-    msg.includes("rate_limit") ||
     // Service issues
     msg.includes("503") ||
     msg.includes("service unavailable") ||

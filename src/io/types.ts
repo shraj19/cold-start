@@ -1,7 +1,7 @@
 // IO-specific types
 
 import type { Chat, Message, Seed, Output } from "../types/index.js";
-import type { VectorStore } from "../store/index.js";
+import type { DataStore } from "../store/index.js";
 
 /** Parsed input data */
 export interface Input {
@@ -19,7 +19,7 @@ export interface RawInput {
 
 /** Example data for few-shot learning */
 export interface ExampleData {
-  store: VectorStore;
+  store: DataStore;
   output: Output;
   raw: RawInput;
   outputText: string;

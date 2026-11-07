@@ -18,12 +18,7 @@ export { loadExample } from "./example.js";
 // Re-export store types for convenience
 export {
   DataStore,
-  VectorStore,
   createStore,
-  createVectorStore,
   type StoreInput,
-  type SemanticSearchOptions,
-  type SearchResult,
   type StoreStats,
-  type EmbeddingStats,
 } from "../store/index.js";
