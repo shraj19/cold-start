@@ -270,9 +270,14 @@ function mergeLoops(batches: BatchOutput[]): OpenLoop[] {
       closed_by: best.closed_by,
     };
     
-    // Only add help for open loops
+    // Only add help for open loops (convert nullish to undefined for output schema)
     if (best.status === "open" && best.help) {
-      loop.help = best.help;
+      loop.help = {
+        action: best.help.action,
+        next_step: best.help.next_step ?? undefined,
+        remind_at: best.help.remind_at ?? undefined,
+        reason: best.help.reason ?? undefined,
+      };
     }
     
     loops.push(loop);

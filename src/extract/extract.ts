@@ -99,6 +99,6 @@ export async function extractBatch(
     return result;
   } catch (err) {
     console.error(`    ✗ ${err instanceof Error ? err.message : err}`);
-    return { circles: [], orgs: [], chats: [], goals: [], loops: [] };
+    return { circles: [], orgs: [], chats: [], goals: [], loops: [], person_links: [] };
   }
 }
