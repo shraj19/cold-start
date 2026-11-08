@@ -14,7 +14,10 @@ example/
 # outputs / run artifacts
 out.json
 output.json
+test-output.json
+*-output.json
 usage.jsonl
+errors.jsonl
 
 # os / editor
 .DS_Store
