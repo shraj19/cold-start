@@ -17,6 +17,10 @@ export const env = createEnv({
     
     // Model identifier (e.g., "gemini-2.0-flash", "gpt-4o-mini")
     LLM_MODEL: z.string().min(1, "LLM_MODEL cannot be empty"),
+    
+    // Optional: Override max tokens per batch (for testing)
+    // If set, ignores model preset and uses this value
+    BATCH_MAX_TOKENS: z.coerce.number().optional(),
 
     // Optional: Groq API key (if set, can use createGroqModel())
     GROQ_API_KEY: z.string().optional(),

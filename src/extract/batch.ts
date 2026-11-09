@@ -15,7 +15,10 @@ export interface BatchOptions {
 
 // Model presets - conservative token limits leaving room for system prompt + output
 const MODEL_PRESETS: Record<string, BatchOptions> = {
-  // Large context models (1M)
+  // Large context models (1M+)
+  'gemini-2.0-flash':            { maxTokens: 800_000, overlapTokens: 50_000 },
+  'gemini-1.5-flash':            { maxTokens: 800_000, overlapTokens: 50_000 },
+  'gemini-1.5-pro':              { maxTokens: 800_000, overlapTokens: 50_000 },
   'google/gemini-flash-1.5':     { maxTokens: 800_000, overlapTokens: 50_000 },
   'google/gemini-pro-1.5':       { maxTokens: 800_000, overlapTokens: 50_000 },
   
@@ -37,11 +40,27 @@ const DEFAULT_OPTIONS: BatchOptions = {
 };
 
 /**
- * Get batch options based on configured model
+ * Get batch options based on configured model or BATCH_MAX_TOKENS override
  */
 export function getBatchOptions(): BatchOptions {
+  // Allow override via env var for testing
+  if (env.BATCH_MAX_TOKENS) {
+    const maxTokens = env.BATCH_MAX_TOKENS;
+    const overlapTokens = Math.floor(maxTokens * 0.1); // 10% overlap
+    console.error(`  [Batch config] Using BATCH_MAX_TOKENS override: ${maxTokens}`);
+    return { maxTokens, overlapTokens };
+  }
+  
   const model = env.LLM_MODEL;
-  return MODEL_PRESETS[model] ?? DEFAULT_OPTIONS;
+  const preset = MODEL_PRESETS[model];
+  
+  if (preset) {
+    console.error(`  [Batch config] Using preset for ${model}: ${preset.maxTokens} tokens`);
+  } else {
+    console.error(`  [Batch config] Unknown model ${model}, using default: ${DEFAULT_OPTIONS.maxTokens} tokens`);
+  }
+  
+  return preset ?? DEFAULT_OPTIONS;
 }
 
 /**
