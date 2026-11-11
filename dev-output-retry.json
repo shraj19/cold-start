@@ -1,0 +1,2883 @@
+{
+  "people": [
+    {
+      "id": "P01",
+      "circle": "friend"
+    },
+    {
+      "id": "P02",
+      "circle": "friend"
+    },
+    {
+      "id": "P03",
+      "circle": "friend"
+    },
+    {
+      "id": "P04",
+      "circle": "friend"
+    },
+    {
+      "id": "P05",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P06",
+      "circle": "partner"
+    },
+    {
+      "id": "P07",
+      "circle": "vendor"
+    },
+    {
+      "id": "P08",
+      "circle": "friend"
+    },
+    {
+      "id": "P09",
+      "circle": "vendor"
+    },
+    {
+      "id": "P10",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P12",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P13",
+      "circle": "spouse"
+    },
+    {
+      "id": "P14",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P15",
+      "circle": "vendor"
+    },
+    {
+      "id": "P16",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P18",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P19",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P21",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P22",
+      "circle": "client"
+    },
+    {
+      "id": "P24",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P25",
+      "circle": "friend"
+    },
+    {
+      "id": "P26",
+      "circle": "client"
+    },
+    {
+      "id": "P27",
+      "circle": "friend"
+    },
+    {
+      "id": "P28",
+      "circle": "vendor"
+    },
+    {
+      "id": "P29",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "nexus",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P30",
+      "circle": "client"
+    },
+    {
+      "id": "P31",
+      "circle": "relative"
+    },
+    {
+      "id": "P32",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P33",
+      "circle": "vendor"
+    },
+    {
+      "id": "P34",
+      "circle": "parent",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "runs"
+        }
+      ]
+    },
+    {
+      "id": "P35",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P36",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P37",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "nexus",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P38",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P39",
+      "circle": "friend"
+    },
+    {
+      "id": "P41",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P43",
+      "circle": "relative"
+    },
+    {
+      "id": "P45",
+      "circle": "relative"
+    },
+    {
+      "id": "P46",
+      "circle": "relative"
+    },
+    {
+      "id": "P47",
+      "circle": "friend"
+    },
+    {
+      "id": "P49",
+      "circle": "client"
+    },
+    {
+      "id": "P50",
+      "circle": "relative"
+    },
+    {
+      "id": "P53",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P54",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P55",
+      "circle": "friend"
+    },
+    {
+      "id": "P58",
+      "circle": "client"
+    },
+    {
+      "id": "P59",
+      "circle": "relative"
+    },
+    {
+      "id": "P60",
+      "circle": "colleague"
+    },
+    {
+      "id": "P61",
+      "circle": "client"
+    },
+    {
+      "id": "P62",
+      "circle": "client"
+    },
+    {
+      "id": "P63",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "nexus",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P64",
+      "circle": "client"
+    },
+    {
+      "id": "P65",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "nexus",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P66",
+      "circle": "relative"
+    },
+    {
+      "id": "P67",
+      "circle": "relative"
+    },
+    {
+      "id": "P68",
+      "circle": "relative"
+    },
+    {
+      "id": "P69",
+      "circle": "friend"
+    },
+    {
+      "id": "P71",
+      "circle": "friend"
+    },
+    {
+      "id": "P72",
+      "circle": "friend"
+    },
+    {
+      "id": "P73",
+      "circle": "client"
+    },
+    {
+      "id": "P74",
+      "circle": "vendor"
+    },
+    {
+      "id": "P75",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P76",
+      "circle": "sibling"
+    },
+    {
+      "id": "P77",
+      "circle": "relative"
+    },
+    {
+      "id": "P78",
+      "circle": "relative"
+    },
+    {
+      "id": "P79",
+      "circle": "relative"
+    },
+    {
+      "id": "P80",
+      "circle": "relative"
+    },
+    {
+      "id": "P81",
+      "circle": "vendor"
+    },
+    {
+      "id": "P82",
+      "circle": "colleague"
+    },
+    {
+      "id": "P83",
+      "circle": "relative"
+    },
+    {
+      "id": "P84",
+      "circle": "vendor"
+    },
+    {
+      "id": "P85",
+      "circle": "staff",
+      "links": [
+        {
+          "organisation": "home",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P86",
+      "circle": "relative"
+    },
+    {
+      "id": "P87",
+      "circle": "friend"
+    },
+    {
+      "id": "P89",
+      "circle": "relative"
+    },
+    {
+      "id": "P90",
+      "circle": "relative"
+    },
+    {
+      "id": "P91",
+      "circle": "relative"
+    },
+    {
+      "id": "P92",
+      "circle": "relative"
+    },
+    {
+      "id": "P93",
+      "circle": "relative"
+    },
+    {
+      "id": "P94",
+      "circle": "relative"
+    },
+    {
+      "id": "P96",
+      "circle": "relative"
+    },
+    {
+      "id": "P97",
+      "circle": "friend"
+    },
+    {
+      "id": "P98",
+      "circle": "relative"
+    },
+    {
+      "id": "P99",
+      "circle": "client"
+    },
+    {
+      "id": "P100",
+      "circle": "relative"
+    },
+    {
+      "id": "P101",
+      "circle": "relative"
+    },
+    {
+      "id": "P102",
+      "circle": "relative"
+    },
+    {
+      "id": "P103",
+      "circle": "friend"
+    },
+    {
+      "id": "P104",
+      "circle": "relative"
+    },
+    {
+      "id": "P105",
+      "circle": "client"
+    },
+    {
+      "id": "P106",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P107",
+      "circle": "vendor"
+    },
+    {
+      "id": "P108",
+      "circle": "relative"
+    },
+    {
+      "id": "P109",
+      "circle": "relative"
+    },
+    {
+      "id": "P115",
+      "circle": "relative"
+    },
+    {
+      "id": "P116",
+      "circle": "friend"
+    },
+    {
+      "id": "P117",
+      "circle": "friend"
+    },
+    {
+      "id": "P120",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P121",
+      "circle": "client"
+    },
+    {
+      "id": "P123",
+      "circle": "friend"
+    },
+    {
+      "id": "P126",
+      "circle": "relative"
+    },
+    {
+      "id": "P128",
+      "circle": "relative"
+    },
+    {
+      "id": "P129",
+      "circle": "relative"
+    },
+    {
+      "id": "P133",
+      "circle": "vendor"
+    },
+    {
+      "id": "P134",
+      "circle": "friend"
+    },
+    {
+      "id": "P135",
+      "circle": "relative"
+    },
+    {
+      "id": "P136",
+      "circle": "vendor"
+    },
+    {
+      "id": "P137",
+      "circle": "relative"
+    },
+    {
+      "id": "P138",
+      "circle": "friend"
+    },
+    {
+      "id": "P139",
+      "circle": "relative"
+    },
+    {
+      "id": "P140",
+      "circle": "relative"
+    },
+    {
+      "id": "P141",
+      "circle": "relative"
+    },
+    {
+      "id": "P142",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "nexus",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P143",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P144",
+      "circle": "client"
+    },
+    {
+      "id": "P145",
+      "circle": "relative"
+    },
+    {
+      "id": "P147",
+      "circle": "relative"
+    },
+    {
+      "id": "P154",
+      "circle": "relative"
+    },
+    {
+      "id": "P155",
+      "circle": "client"
+    },
+    {
+      "id": "P156",
+      "circle": "client"
+    },
+    {
+      "id": "P157",
+      "circle": "relative"
+    },
+    {
+      "id": "P159",
+      "circle": "relative"
+    },
+    {
+      "id": "P164",
+      "circle": "relative"
+    },
+    {
+      "id": "P166",
+      "circle": "relative"
+    },
+    {
+      "id": "P167",
+      "circle": "relative"
+    },
+    {
+      "id": "P168",
+      "circle": "vendor"
+    },
+    {
+      "id": "P169",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P170",
+      "circle": "relative"
+    },
+    {
+      "id": "P172",
+      "circle": "vendor"
+    },
+    {
+      "id": "P173",
+      "circle": "staff",
+      "links": [
+        {
+          "organisation": "home",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P174",
+      "circle": "vendor"
+    },
+    {
+      "id": "P175",
+      "circle": "friend"
+    },
+    {
+      "id": "P176",
+      "circle": "relative"
+    },
+    {
+      "id": "P177",
+      "circle": "relative"
+    },
+    {
+      "id": "P180",
+      "circle": "friend"
+    },
+    {
+      "id": "P181",
+      "circle": "friend"
+    },
+    {
+      "id": "P182",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P183",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "nexus",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P187",
+      "circle": "relative"
+    },
+    {
+      "id": "P191",
+      "circle": "client"
+    },
+    {
+      "id": "P192",
+      "circle": "client"
+    },
+    {
+      "id": "P195",
+      "circle": "staff",
+      "links": [
+        {
+          "organisation": "home",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P196",
+      "circle": "client"
+    },
+    {
+      "id": "P197",
+      "circle": "friend"
+    },
+    {
+      "id": "P198",
+      "circle": "relative"
+    },
+    {
+      "id": "P199",
+      "circle": "vendor"
+    },
+    {
+      "id": "P201",
+      "circle": "friend"
+    },
+    {
+      "id": "P202",
+      "circle": "sibling"
+    },
+    {
+      "id": "P203",
+      "circle": "friend"
+    },
+    {
+      "id": "P204",
+      "circle": "vendor"
+    },
+    {
+      "id": "P205",
+      "circle": "client"
+    },
+    {
+      "id": "P209",
+      "circle": "vendor"
+    },
+    {
+      "id": "P210",
+      "circle": "friend"
+    },
+    {
+      "id": "P211",
+      "circle": "client"
+    },
+    {
+      "id": "P212",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "nexus",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P213",
+      "circle": "client"
+    },
+    {
+      "id": "P214",
+      "circle": "vendor"
+    },
+    {
+      "id": "P215",
+      "circle": "client"
+    },
+    {
+      "id": "P218",
+      "circle": "friend"
+    },
+    {
+      "id": "P219",
+      "circle": "friend"
+    },
+    {
+      "id": "P220",
+      "circle": "relative"
+    },
+    {
+      "id": "P221",
+      "circle": "relative"
+    },
+    {
+      "id": "P222",
+      "circle": "relative"
+    },
+    {
+      "id": "P223",
+      "circle": "client"
+    },
+    {
+      "id": "P225",
+      "circle": "vendor"
+    },
+    {
+      "id": "P227",
+      "circle": "vendor"
+    },
+    {
+      "id": "P228",
+      "circle": "client"
+    },
+    {
+      "id": "P229",
+      "circle": "client"
+    },
+    {
+      "id": "P230",
+      "circle": "client"
+    },
+    {
+      "id": "P231",
+      "circle": "relative"
+    },
+    {
+      "id": "P232",
+      "circle": "relative"
+    },
+    {
+      "id": "P233",
+      "circle": "relative"
+    },
+    {
+      "id": "P234",
+      "circle": "relative"
+    },
+    {
+      "id": "P236",
+      "circle": "client"
+    },
+    {
+      "id": "P238",
+      "circle": "client"
+    },
+    {
+      "id": "P239",
+      "circle": "client"
+    },
+    {
+      "id": "P241",
+      "circle": "client"
+    },
+    {
+      "id": "P242",
+      "circle": "relative"
+    },
+    {
+      "id": "P245",
+      "circle": "client"
+    },
+    {
+      "id": "P250",
+      "circle": "relative"
+    },
+    {
+      "id": "P263",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P267",
+      "circle": "vendor"
+    },
+    {
+      "id": "P269",
+      "circle": "client"
+    },
+    {
+      "id": "P272",
+      "circle": "relative"
+    },
+    {
+      "id": "P273",
+      "circle": "relative"
+    },
+    {
+      "id": "P274",
+      "circle": "relative"
+    },
+    {
+      "id": "P276",
+      "circle": "colleague"
+    },
+    {
+      "id": "P278",
+      "circle": "relative"
+    },
+    {
+      "id": "P279",
+      "circle": "relative"
+    },
+    {
+      "id": "P280",
+      "circle": "vendor"
+    },
+    {
+      "id": "P319",
+      "circle": "partner"
+    },
+    {
+      "id": "P570",
+      "circle": "staff",
+      "links": [
+        {
+          "organisation": "home",
+          "link": "supports"
+        }
+      ]
+    },
+    {
+      "id": "P571",
+      "circle": "relative"
+    },
+    {
+      "id": "P572",
+      "circle": "colleague",
+      "links": [
+        {
+          "organisation": "postmyad",
+          "link": "supports"
+        }
+      ]
+    }
+  ],
+  "organisations": [
+    {
+      "id": "home",
+      "name": "Home",
+      "type": "residence",
+      "side": "home",
+      "role": "owner"
+    },
+    {
+      "id": "postmyad",
+      "name": "PostMyAd",
+      "type": "company",
+      "side": "work",
+      "role": "owner"
+    },
+    {
+      "id": "nexus",
+      "name": "NEXUS",
+      "type": "company",
+      "side": "work",
+      "role": "owner"
+    },
+    {
+      "id": "c01_bvf",
+      "name": "BVF",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c02_lazzzy_agri_pickleball",
+      "name": "Lazzzy Agri pickle ball group",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c04_d2c_circle_4",
+      "name": "D2C Circle 4",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c06_carpool",
+      "name": "Carpool",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c08_rmdg_kolkata",
+      "name": "RMDG KOLKATA",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c11_radiant_operations",
+      "name": "Radiant operations",
+      "type": "company",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c15_d2b_connect_east",
+      "name": "D2B Connect East",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c16_d2b_connect_marketplaces",
+      "name": "D2B Connect Marketplaces",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c18_founders_circle",
+      "name": "The Founders Circle - 1",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c22_italy_2014",
+      "name": "Italy 2014",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c28_d2c_circle_west",
+      "name": "D2C Circle West",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c39_project_coffee_table_book",
+      "name": "project coffee table book",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c43_morsel_roll_maki",
+      "name": "Morsel & Roll & Maki / SMM",
+      "type": "company",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c47_d2c_connect_forum",
+      "name": "D2C Connect Forum",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c49_table_tennis_bhowanipore",
+      "name": "Table Tennis - Bhowanipore DB",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c54_d2c_circle_north",
+      "name": "D2C Circle North",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c66_birla_house",
+      "name": "Birla House",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c73_nerds",
+      "name": "Nerds",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c74_purnaria_growth_2018_c1",
+      "name": "Purnaria Growth 2018 C1",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c76_d2c_circle_south",
+      "name": "D2c Circle South",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    },
+    {
+      "id": "c78_tadoba_feb",
+      "name": "Tadoba feb",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c107_morning_yoga",
+      "name": "Morning yoga",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c125_york_club_kolkata",
+      "name": "York Club Kolkata",
+      "type": "other",
+      "side": "home",
+      "role": "member"
+    },
+    {
+      "id": "c127_bootstrapped_founders",
+      "name": "Bootstrapped Founders",
+      "type": "other",
+      "side": "work",
+      "role": "member"
+    }
+  ],
+  "chats": [
+    {
+      "chat_id": "C01",
+      "organisation": "c01_bvf"
+    },
+    {
+      "chat_id": "C02",
+      "organisation": "c02_lazzzy_agri_pickleball"
+    },
+    {
+      "chat_id": "C03",
+      "organisation": "postmyad"
+    },
+    {
+      "chat_id": "C04",
+      "organisation": "c04_d2c_circle_4"
+    },
+    {
+      "chat_id": "C05",
+      "person": "P07"
+    },
+    {
+      "chat_id": "C06",
+      "organisation": "c06_carpool"
+    },
+    {
+      "chat_id": "C07",
+      "person": "P09"
+    },
+    {
+      "chat_id": "C08",
+      "organisation": "c08_rmdg_kolkata"
+    },
+    {
+      "chat_id": "C09",
+      "person": "P12"
+    },
+    {
+      "chat_id": "C10",
+      "person": "P13"
+    },
+    {
+      "chat_id": "C11",
+      "organisation": "c11_radiant_operations"
+    },
+    {
+      "chat_id": "C12",
+      "organisation": "postmyad"
+    },
+    {
+      "chat_id": "C13",
+      "person": "P15"
+    },
+    {
+      "chat_id": "C14",
+      "person": "P17"
+    },
+    {
+      "chat_id": "C15",
+      "organisation": "c15_d2b_connect_east"
+    },
+    {
+      "chat_id": "C16",
+      "organisation": "c16_d2b_connect_marketplaces"
+    },
+    {
+      "chat_id": "C17",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C18",
+      "organisation": "c18_founders_circle"
+    },
+    {
+      "chat_id": "C19",
+      "person": "P25"
+    },
+    {
+      "chat_id": "C20",
+      "person": "P63"
+    },
+    {
+      "chat_id": "C21",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C22",
+      "organisation": "c22_italy_2014"
+    },
+    {
+      "chat_id": "C23",
+      "person": "P28"
+    },
+    {
+      "chat_id": "C24",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C25",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C26",
+      "person": "P33"
+    },
+    {
+      "chat_id": "C27",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C28",
+      "organisation": "c28_d2c_circle_west"
+    },
+    {
+      "chat_id": "C29",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C30",
+      "person": "P34"
+    },
+    {
+      "chat_id": "C31",
+      "person": "P319"
+    },
+    {
+      "chat_id": "C32",
+      "person": "P569"
+    },
+    {
+      "chat_id": "C33",
+      "person": "P48"
+    },
+    {
+      "chat_id": "C34",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C35",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C36",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C37",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C38",
+      "person": "P01"
+    },
+    {
+      "chat_id": "C39",
+      "organisation": "c39_project_coffee_table_book"
+    },
+    {
+      "chat_id": "C40",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C41",
+      "person": "P59"
+    },
+    {
+      "chat_id": "C42",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C43",
+      "organisation": "c43_morsel_roll_maki"
+    },
+    {
+      "chat_id": "C44",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C45",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C46",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C47",
+      "organisation": "c47_d2c_connect_forum"
+    },
+    {
+      "chat_id": "C48",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C49",
+      "organisation": "c49_table_tennis_bhowanipore"
+    },
+    {
+      "chat_id": "C50",
+      "person": "P73"
+    },
+    {
+      "chat_id": "C51",
+      "person": "P74"
+    },
+    {
+      "chat_id": "C52",
+      "person": "P75"
+    },
+    {
+      "chat_id": "C53",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C54",
+      "organisation": "c54_d2c_circle_north"
+    },
+    {
+      "chat_id": "C55",
+      "person": "P99"
+    },
+    {
+      "chat_id": "C56",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C57",
+      "person": "P16"
+    },
+    {
+      "chat_id": "C58",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C59",
+      "person": "P116"
+    },
+    {
+      "chat_id": "C60",
+      "person": "P10"
+    },
+    {
+      "chat_id": "C61",
+      "person": "P93"
+    },
+    {
+      "chat_id": "C62",
+      "person": "P65"
+    },
+    {
+      "chat_id": "C63",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C64",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C65",
+      "person": "P131"
+    },
+    {
+      "chat_id": "C66",
+      "organisation": "c66_birla_house"
+    },
+    {
+      "chat_id": "C67",
+      "person": "P136"
+    },
+    {
+      "chat_id": "C68",
+      "person": "P138"
+    },
+    {
+      "chat_id": "C69",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C70",
+      "person": "P142"
+    },
+    {
+      "chat_id": "C71",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C72",
+      "person": "P212"
+    },
+    {
+      "chat_id": "C73",
+      "organisation": "c73_nerds"
+    },
+    {
+      "chat_id": "C74",
+      "organisation": "c74_purnaria_growth_2018_c1"
+    },
+    {
+      "chat_id": "C75",
+      "person": "P86"
+    },
+    {
+      "chat_id": "C76",
+      "organisation": "c76_d2c_circle_south"
+    },
+    {
+      "chat_id": "C77",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C78",
+      "organisation": "c78_tadoba_feb"
+    },
+    {
+      "chat_id": "C79",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C80",
+      "person": "P91"
+    },
+    {
+      "chat_id": "C81",
+      "person": "P168"
+    },
+    {
+      "chat_id": "C82",
+      "person": "P169"
+    },
+    {
+      "chat_id": "C83",
+      "person": "P170"
+    },
+    {
+      "chat_id": "C84",
+      "person": "P172"
+    },
+    {
+      "chat_id": "C85",
+      "person": "P173"
+    },
+    {
+      "chat_id": "C86",
+      "person": "P174"
+    },
+    {
+      "chat_id": "C87",
+      "person": "P175"
+    },
+    {
+      "chat_id": "C88",
+      "person": "P80"
+    },
+    {
+      "chat_id": "C89",
+      "person": "P46"
+    },
+    {
+      "chat_id": "C90",
+      "person": "P181"
+    },
+    {
+      "chat_id": "C91",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C92",
+      "person": "P183"
+    },
+    {
+      "chat_id": "C93",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C94",
+      "person": "P26"
+    },
+    {
+      "chat_id": "C95",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C96",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C97",
+      "person": "P197"
+    },
+    {
+      "chat_id": "C98",
+      "person": "P203"
+    },
+    {
+      "chat_id": "C99",
+      "person": "P120"
+    },
+    {
+      "chat_id": "C100",
+      "person": "P199"
+    },
+    {
+      "chat_id": "C101",
+      "person": "P201"
+    },
+    {
+      "chat_id": "C102",
+      "person": "P202"
+    },
+    {
+      "chat_id": "C103",
+      "person": "P204"
+    },
+    {
+      "chat_id": "C104",
+      "person": "P117"
+    },
+    {
+      "chat_id": "C105",
+      "person": "P570"
+    },
+    {
+      "chat_id": "C106",
+      "person": "P205"
+    },
+    {
+      "chat_id": "C107",
+      "organisation": "c107_morning_yoga"
+    },
+    {
+      "chat_id": "C108",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C109",
+      "person": "P209"
+    },
+    {
+      "chat_id": "C110",
+      "person": "P211"
+    },
+    {
+      "chat_id": "C111",
+      "person": "P214"
+    },
+    {
+      "chat_id": "C112",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C113",
+      "person": "P27"
+    },
+    {
+      "chat_id": "C114",
+      "person": "P210"
+    },
+    {
+      "chat_id": "C115",
+      "person": "P223"
+    },
+    {
+      "chat_id": "C116",
+      "person": "P225"
+    },
+    {
+      "chat_id": "C117",
+      "person": "P227"
+    },
+    {
+      "chat_id": "C118",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C119",
+      "person": "P232"
+    },
+    {
+      "chat_id": "C120",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C121",
+      "person": "P238"
+    },
+    {
+      "chat_id": "C122",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C123",
+      "person": "P76"
+    },
+    {
+      "chat_id": "C124",
+      "person": "P571"
+    },
+    {
+      "chat_id": "C125",
+      "organisation": "c125_york_club_kolkata"
+    },
+    {
+      "chat_id": "C126",
+      "organisation": "home"
+    },
+    {
+      "chat_id": "C127",
+      "organisation": "c127_bootstrapped_founders"
+    },
+    {
+      "chat_id": "C128",
+      "person": "P53"
+    },
+    {
+      "chat_id": "C129",
+      "person": "P572"
+    },
+    {
+      "chat_id": "C130",
+      "organisation": "nexus"
+    },
+    {
+      "chat_id": "C131",
+      "person": "P263"
+    },
+    {
+      "chat_id": "C132",
+      "organisation": "postmyad"
+    },
+    {
+      "chat_id": "C133",
+      "person": "P267"
+    },
+    {
+      "chat_id": "C134",
+      "person": "P115"
+    },
+    {
+      "chat_id": "C135",
+      "person": "P229"
+    },
+    {
+      "chat_id": "C136",
+      "person": "P279"
+    },
+    {
+      "chat_id": "C137",
+      "person": "P280"
+    },
+    {
+      "chat_id": "C138",
+      "organisation": "home"
+    }
+  ],
+  "goals": [
+    {
+      "title": "Build an AI team of 3 for PostMyAd/Nexus AI initiatives",
+      "area": "work",
+      "type": "milestone",
+      "horizon": "3mo",
+      "evidence": [
+        "M02472"
+      ]
+    },
+    {
+      "title": "Build a Nexus AI product using ChatGPT ads and consumer brand data",
+      "area": "work",
+      "type": "milestone",
+      "horizon": "3mo",
+      "evidence": [
+        "M02792",
+        "M02793"
+      ]
+    },
+    {
+      "title": "Complete building lobby false ceiling and beautification before Diwali",
+      "area": "home",
+      "type": "milestone",
+      "horizon": "3mo",
+      "evidence": [
+        "M01859",
+        "M01541"
+      ]
+    },
+    {
+      "title": "Set up home theatre speakers and AVR",
+      "area": "home",
+      "type": "milestone",
+      "horizon": "3mo",
+      "evidence": [
+        "M04376",
+        "M04377"
+      ]
+    },
+    {
+      "title": "Complete pickleball court setup with net ring and basketball hoop",
+      "area": "health",
+      "type": "milestone",
+      "horizon": "3mo",
+      "evidence": [
+        "M00517",
+        "M00504"
+      ]
+    },
+    {
+      "title": "Complete ADHD assessment for Reyansh",
+      "area": "health",
+      "type": "milestone",
+      "horizon": "3mo",
+      "evidence": [
+        "M00119",
+        "M00782"
+      ]
+    },
+    {
+      "title": "Consolidate household staff roles, salaries, and payment dates",
+      "area": "home",
+      "type": "milestone",
+      "horizon": "3mo",
+      "evidence": [
+        "M02080"
+      ]
+    }
+  ],
+  "open_loops": [
+    {
+      "title": "Be present at pickleball site for Pradip and Suku measurement",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C07",
+      "source_msg": "M00017",
+      "due": "2026-08-24",
+      "status": "done",
+      "closed_by": "M00507"
+    },
+    {
+      "title": "Review and approve pickleball acrylic net ring quote",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C07",
+      "source_msg": "M00504",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Compare the imported acrylic and cheaper 12mm options and confirm which to buy",
+        "remind_at": "2026-09-07",
+        "reason": "ME must make the final purchase decision"
+      }
+    },
+    {
+      "title": "Chase Kiran Infotech projector delivery update",
+      "type": "followup",
+      "owner": "ME",
+      "chat_id": "C09",
+      "source_msg": "M01870",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Draft a follow-up to Amrit/Kiran Infotech asking for delivery confirmation and date",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare follow-up message and track status"
+      }
+    },
+    {
+      "title": "Collect scanned documents from Mohan da for Amrit",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C09",
+      "source_msg": "M01873",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Remind ME to explain document requirements to Amrit and arrange collection",
+        "remind_at": "2026-09-07",
+        "reason": "Requires ME's personal follow-up"
+      }
+    },
+    {
+      "title": "Enter Radiant sales and tell Nayna cash to deposit",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C11",
+      "source_msg": "M00032",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Consolidate sales entries and calculate cash deposit amount",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare a sales/deposit summary"
+      }
+    },
+    {
+      "title": "Schedule Reyansh ADHD test with Ramita Biren",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C26",
+      "source_msg": "M00119",
+      "due": "2026-09-07",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Confirm the 7 September appointment with Ramita and share any required forms",
+        "remind_at": "2026-09-06",
+        "reason": "ME must finalize the appointment"
+      }
+    },
+    {
+      "title": "Arrange another accountant or backup for Nayna's work",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C10",
+      "source_msg": "M01078",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Identify possible accountant candidates and training split",
+        "remind_at": "2026-09-07",
+        "reason": "Can research and shortlist options"
+      }
+    },
+    {
+      "title": "Consolidate household staff details and take over salary discussions",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C10",
+      "source_msg": "M02080",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Create a staff salary/duty/payment tracker",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare the consolidation template"
+      }
+    },
+    {
+      "title": "Add Yogik cleaning tasks as reminders and get Sandipa task list",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C10",
+      "source_msg": "M02592",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Convert the cleaning list into recurring reminders and request Sandipa's task list",
+        "remind_at": "2026-09-07",
+        "reason": "Can structure reminders"
+      }
+    },
+    {
+      "title": "Give Harav documents for invexapp and clear Pravesh Securities setup",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C10",
+      "source_msg": "M02241",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Remind ME to hand over documents and follow up with Harav",
+        "remind_at": "2026-09-07",
+        "reason": "Requires ME's documents and personal follow-up"
+      }
+    },
+    {
+      "title": "Send save-the-date for birthday picnic",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C10",
+      "source_msg": "M01945",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Draft a simple save-the-date message or image",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare draft"
+      }
+    },
+    {
+      "title": "Issue internship certificate for srijag2003 via Amrit",
+      "type": "deadline",
+      "owner": "ME",
+      "chat_id": "C14",
+      "source_msg": "M00049",
+      "due": "2026-08-31",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Follow up with Amrit to evaluate days and issue certificate",
+        "remind_at": "2026-09-07",
+        "reason": "ME must approve/coordinate internally"
+      }
+    },
+    {
+      "title": "Share report/catchment analysis with Pranav",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C19",
+      "source_msg": "M00071",
+      "due": "2026-08-30",
+      "status": "done",
+      "closed_by": "M03178"
+    },
+    {
+      "title": "Schedule call with Pranav",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C19",
+      "source_msg": "M03850",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Share calendar link or propose slots",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare scheduling options"
+      }
+    },
+    {
+      "title": "Compare glass/aluminium rates and update Dhiren",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C23",
+      "source_msg": "M02905",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Prepare a simple rate comparison sheet",
+        "remind_at": "2026-09-07",
+        "reason": "Can gather and structure quote data"
+      }
+    },
+    {
+      "title": "Meet Dhiren Mohta for glass/window work",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C23",
+      "source_msg": "M03491",
+      "due": "2026-09-03",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Confirm meeting time/place with Dhiren",
+        "remind_at": "2026-09-07",
+        "reason": "ME must attend personally"
+      }
+    },
+    {
+      "title": "Arrange airport car at 12:30 am",
+      "type": "deadline",
+      "owner": "ME",
+      "chat_id": "C30",
+      "source_msg": "M02946",
+      "due": "2026-09-02",
+      "status": "done",
+      "closed_by": "M02948"
+    },
+    {
+      "title": "Leave office at 6 pm and arrange driver after",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C30",
+      "source_msg": "M02060",
+      "due": "2026-08-31",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Confirm driver arrangement for after 6 pm",
+        "remind_at": "2026-09-07",
+        "reason": "ME needs to coordinate personally"
+      }
+    },
+    {
+      "title": "Suggest email marketing app to Navima",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C34",
+      "source_msg": "M00892",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Research 2-3 Shopify-compatible email marketing apps",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare options"
+      }
+    },
+    {
+      "title": "Reconfirm 11 am meeting with Nirant",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C38",
+      "source_msg": "M01497",
+      "due": "2026-08-29",
+      "status": "done",
+      "closed_by": "M01503"
+    },
+    {
+      "title": "Provide Breezy Scoops login credentials",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C44",
+      "source_msg": "M04010",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Collect and verify the dashboard login details",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare secure handoff"
+      }
+    },
+    {
+      "title": "Benchmark Rajarshi store sales data against Nexus demand",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C50",
+      "source_msg": "M02106",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Create a benchmark template for store sales vs catchment demand",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare analysis structure"
+      }
+    },
+    {
+      "title": "Reduce Bangladesh spend and get priority pincodes from Ishani",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C56",
+      "source_msg": "M04031",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Draft pincode targeting plan and budget reduction note",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare targeting plan"
+      }
+    },
+    {
+      "title": "Process The Inner Ring payment clearance and proposal",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C58",
+      "source_msg": "M01277",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Check proposal, GST details, and payment clearance status",
+        "remind_at": "2026-09-07",
+        "reason": "Can track documents and follow-up"
+      }
+    },
+    {
+      "title": "SUDAR to reshare task list and train backup",
+      "type": "followup",
+      "owner": "P10",
+      "chat_id": "C60",
+      "source_msg": "M00971",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "leave",
+        "reason": "Waiting on this person to complete"
+      }
+    },
+    {
+      "title": "SUDAR to clear Pravesh Securities docs after rejoining",
+      "type": "deadline",
+      "owner": "P10",
+      "chat_id": "C60",
+      "source_msg": "M02937",
+      "due": "2026-09-03",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "leave",
+        "reason": "Waiting on this person to complete"
+      }
+    },
+    {
+      "title": "Ask Birendra to buy VTC stock",
+      "type": "commitment",
+      "owner": "P93",
+      "chat_id": "C61",
+      "source_msg": "M02450",
+      "due": null,
+      "status": "done",
+      "closed_by": "M02451"
+    },
+    {
+      "title": "Discuss ChatGPT ads and Nexus AI product with Suparna",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C62",
+      "source_msg": "M02792",
+      "due": "2026-09-02",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Prepare a one-page brief on product idea and data usage",
+        "remind_at": "2026-09-07",
+        "reason": "Can draft discussion brief"
+      }
+    },
+    {
+      "title": "Call Suparna for luxury clothing brand brief",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C62",
+      "source_msg": "M02540",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Call Suparna to get the brief",
+        "remind_at": "2026-09-07",
+        "reason": "ME must speak personally"
+      }
+    },
+    {
+      "title": "Respond to Milind about FBC call and DSP Mutual Fund intro",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C68",
+      "source_msg": "M01254",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Draft reply with FBC update and DSP intro plan",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare response"
+      }
+    },
+    {
+      "title": "Discuss ChatGPT ads and Nexus AI product with Chandrima",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C70",
+      "source_msg": "M03020",
+      "due": "2026-09-03",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Prepare short brief for discussion",
+        "remind_at": "2026-09-07",
+        "reason": "Can draft brief"
+      }
+    },
+    {
+      "title": "Fix design on pages with Paramita",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C72",
+      "source_msg": "M02648",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Review page images and list design fixes",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare a fix list"
+      }
+    },
+    {
+      "title": "Resolve Delhi Shirt House ad account access/read-only issue",
+      "type": "followup",
+      "owner": "ME",
+      "chat_id": "C77",
+      "source_msg": "M02968",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Coordinate with Nexus tech to restore access",
+        "remind_at": "2026-09-07",
+        "reason": "Can track and draft follow-up"
+      }
+    },
+    {
+      "title": "Add song background to Instagram post for Karthik",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C80",
+      "source_msg": "M01521",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Edit the video/post and add suitable audio",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare edit steps"
+      }
+    },
+    {
+      "title": "Finalize false ceiling costing and order for building lobby",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C81",
+      "source_msg": "M01541",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Compile measurements, product choice, and rate comparison",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare comparison sheet"
+      }
+    },
+    {
+      "title": "Discuss ChatGPT ads and Nexus AI product with Srishti",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C82",
+      "source_msg": "M02798",
+      "due": "2026-09-02",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Prepare brief and share with Srishti",
+        "remind_at": "2026-09-07",
+        "reason": "Can draft brief"
+      }
+    },
+    {
+      "title": "Check Brandline India / Forbes publication arrangement",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C83",
+      "source_msg": "M01549",
+      "due": "2026-08-29",
+      "status": "done",
+      "closed_by": "M01676"
+    },
+    {
+      "title": "Meet Sunil this week second half",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C92",
+      "source_msg": "M02104",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Confirm a slot when Sunil is in Pune",
+        "remind_at": "2026-09-07",
+        "reason": "ME must choose a meeting time"
+      }
+    },
+    {
+      "title": "Resolve Wanderly ledger confirmation and TDS refund",
+      "type": "followup",
+      "owner": "ME",
+      "chat_id": "C93",
+      "source_msg": "M02656",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Check ledger, TDS certificate, and refund details",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare reconciliation note"
+      }
+    },
+    {
+      "title": "Implement WhatsApp human handoff for Arar",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C94",
+      "source_msg": "M02276",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Define handoff trigger and message routing",
+        "remind_at": "2026-09-07",
+        "reason": "Can draft workflow"
+      }
+    },
+    {
+      "title": "Schedule call with Steven Bridger",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C97",
+      "source_msg": "M02398",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Propose Saturday Zoom or Bangalore slot",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare scheduling options"
+      }
+    },
+    {
+      "title": "Meet Girav Pinto when he visits 11-18",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C98",
+      "source_msg": "M02400",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Confirm a drop-by time during his visit",
+        "remind_at": "2026-09-11",
+        "reason": "ME must be available"
+      }
+    },
+    {
+      "title": "Schedule call with Sayan Agarwal",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C101",
+      "source_msg": "M02415",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Propose Saturday call slots",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare options"
+      }
+    },
+    {
+      "title": "Coordinate car RC mobile number update with Ishaan and Faisal",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C102",
+      "source_msg": "M02436",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Collect smart card, RC details, and Ishaan's number",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare document checklist"
+      }
+    },
+    {
+      "title": "Finalize US speaker order with Ishaan",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C102",
+      "source_msg": "M04376",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Prepare final item list, prices, and links",
+        "remind_at": "2026-09-07",
+        "reason": "Can consolidate order details"
+      }
+    },
+    {
+      "title": "Approve chemical order for TCCA, HCl, alum",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C103",
+      "source_msg": "M02425",
+      "due": null,
+      "status": "done",
+      "closed_by": "M02505"
+    },
+    {
+      "title": "Sandipa to hide iMac keyboard before kids come",
+      "type": "commitment",
+      "owner": "P570",
+      "chat_id": "C105",
+      "source_msg": "M02455",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "leave",
+        "reason": "Waiting on this person to complete"
+      }
+    },
+    {
+      "title": "Revert to Saneeta on Prita and service scope",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C106",
+      "source_msg": "M03621",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Draft a thoughtful response and next steps",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare communication"
+      }
+    },
+    {
+      "title": "Confirm morning yoga batch spot and fee",
+      "type": "deadline",
+      "owner": "ME",
+      "chat_id": "C107",
+      "source_msg": "M02516",
+      "due": "2026-09-02",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Confirm spot and payment for September batch",
+        "remind_at": "2026-09-07",
+        "reason": "ME must decide and pay"
+      }
+    },
+    {
+      "title": "Schedule exploratory call with Devay Kabra",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C110",
+      "source_msg": "M02645",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Share calendar link or propose slots",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare scheduling"
+      }
+    },
+    {
+      "title": "Connect with Biplab Saikia of ShopSense",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C111",
+      "source_msg": "M02676",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Draft reply and propose a short call",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare outreach"
+      }
+    },
+    {
+      "title": "Call Suparna Leela Maddia",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C115",
+      "source_msg": "M02909",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Call Suparna Leela when free",
+        "remind_at": "2026-09-07",
+        "reason": "ME must call personally"
+      }
+    },
+    {
+      "title": "Return item to Shalini Ganguly",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C119",
+      "source_msg": "M03224",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Arrange handover of the item",
+        "remind_at": "2026-09-07",
+        "reason": "ME must physically return it"
+      }
+    },
+    {
+      "title": "Revert to Ronak Malwal on campaign performance and call",
+      "type": "followup",
+      "owner": "ME",
+      "chat_id": "C121",
+      "source_msg": "M03403",
+      "due": "2026-09-04",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Prepare performance notes and propose call slots",
+        "remind_at": "2026-09-07",
+        "reason": "Can draft update"
+      }
+    },
+    {
+      "title": "Help Zara with Claude/Cipher47 access",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C123",
+      "source_msg": "M03452",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Share access steps and troubleshoot security code",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare instructions"
+      }
+    },
+    {
+      "title": "Clarify display ad booking query with Nisha",
+      "type": "followup",
+      "owner": "ME",
+      "chat_id": "C128",
+      "source_msg": "M03861",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Trace the booking link and query routing",
+        "remind_at": "2026-09-07",
+        "reason": "Can investigate and summarize"
+      }
+    },
+    {
+      "title": "Clarify with zoya whether work is continuing",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C132",
+      "source_msg": "M04141",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Decide and tell zoya whether to continue",
+        "remind_at": "2026-09-07",
+        "reason": "ME must make the call"
+      }
+    },
+    {
+      "title": "Vasant to provide drawings/quotation by Tuesday",
+      "type": "followup",
+      "owner": "P267",
+      "chat_id": "C133",
+      "source_msg": "M04153",
+      "due": "2026-09-08",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "leave",
+        "reason": "Waiting on this person to complete"
+      }
+    },
+    {
+      "title": "Schedule RoyalEdge meeting Monday before 4 pm for Roopa",
+      "type": "deadline",
+      "owner": "ME",
+      "chat_id": "C135",
+      "source_msg": "M04252",
+      "due": "2026-09-07",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Send invite for Monday before 4 pm",
+        "remind_at": "2026-09-06",
+        "reason": "Can prepare calendar invite"
+      }
+    },
+    {
+      "title": "Get false ceiling quote from Anmol Trading",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C137",
+      "source_msg": "M04406",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Share requirement details and request quote",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare RFQ"
+      }
+    },
+    {
+      "title": "Identify who is handling PMA customer query",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C03",
+      "source_msg": "M00755",
+      "due": null,
+      "status": "done",
+      "closed_by": "M00757"
+    },
+    {
+      "title": "Understand display/category ownership process with P16",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C03",
+      "source_msg": "M03860",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Prepare a simple process map before desk discussion",
+        "remind_at": "2026-09-07",
+        "reason": "Can draft process questions"
+      }
+    },
+    {
+      "title": "Validate Navya Jewels offline sales data format",
+      "type": "followup",
+      "owner": "ME",
+      "chat_id": "C17",
+      "source_msg": "M00463",
+      "due": null,
+      "status": "done",
+      "closed_by": "M00621"
+    },
+    {
+      "title": "Fix SWAR chatbot messaging errors",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C21",
+      "source_msg": "M00734",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Collect error screenshots and define ideal responses",
+        "remind_at": "2026-09-07",
+        "reason": "Can structure bug fixes"
+      }
+    },
+    {
+      "title": "Confirm whether Carfitt wants to continue Nexus audience",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C37",
+      "source_msg": "M00316",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Follow up with Carfitt for confirmation",
+        "remind_at": "2026-09-07",
+        "reason": "ME must get client decision"
+      }
+    },
+    {
+      "title": "Action Veda Natural request to stop Nexus audience from September",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C42",
+      "source_msg": "M02371",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "assist",
+        "next_step": "Confirm required account changes and reply to client",
+        "remind_at": "2026-09-07",
+        "reason": "Can prepare action note"
+      }
+    },
+    {
+      "title": "Confirm dinner plan with Ravav for 31 Aug",
+      "type": "question",
+      "owner": "ME",
+      "chat_id": "C73",
+      "source_msg": "M01874",
+      "due": "2026-08-31",
+      "status": "dropped",
+      "closed_by": null
+    },
+    {
+      "title": "Coordinate no dinner for kids and kitchen instructions",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C91",
+      "source_msg": "M04271",
+      "due": "2026-09-05",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Confirm kitchen has no dinner for kids and needed items",
+        "remind_at": "2026-09-07",
+        "reason": "ME must communicate clearly"
+      }
+    },
+    {
+      "title": "Play pickleball tomorrow morning",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C02",
+      "source_msg": "M04473",
+      "due": "2026-09-07",
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "remind",
+        "next_step": "Confirm attendance for 6:30 am",
+        "remind_at": "2026-09-06",
+        "reason": "ME must decide if playing"
+      }
+    },
+    {
+      "title": "Follow up outstanding Agarwal Traders payments",
+      "type": "followup",
+      "owner": "P15",
+      "chat_id": "C13",
+      "source_msg": "M00044",
+      "due": null,
+      "status": "open",
+      "closed_by": null,
+      "help": {
+        "action": "leave",
+        "reason": "Waiting on this person to complete"
+      }
+    },
+    {
+      "title": "Provide Claude/Codex access to Subrata",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C99",
+      "source_msg": "M04196",
+      "due": null,
+      "status": "done",
+      "closed_by": "M04204"
+    },
+    {
+      "title": "Send yoga fees to Probir",
+      "type": "commitment",
+      "owner": "ME",
+      "chat_id": "C109",
+      "source_msg": "M02609",
+      "due": null,
+      "status": "done",
+      "closed_by": "M02935"
+    }
+  ]
+}

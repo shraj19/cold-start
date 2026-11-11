@@ -22,11 +22,11 @@ function mergeCirclesAndLinks(
   const circleByPerson = new Map<string, CircleExtract[]>();
   
   for (const batch of batches) {
-    for (const c of batch.circles) {
-      if (c.person_id === "ME") continue;
-      const list = circleByPerson.get(c.person_id) ?? [];
-      list.push(c);
-      circleByPerson.set(c.person_id, list);
+    for (const circle of batch.circles) {
+      if (circle.person_id === "ME") continue;
+      const list = circleByPerson.get(circle.person_id) ?? [];
+      list.push(circle);
+      circleByPerson.set(circle.person_id, list);
     }
   }
   
@@ -75,9 +75,9 @@ function mergeCirclesAndLinks(
         }
       }
       
-      person.links = [...linksByOrg.values()].map(l => ({
-        organisation: l.org_id,
-        link: l.link,
+      person.links = [...linksByOrg.values()].map(link => ({
+        organisation: link.org_id,
+        link: link.link,
       }));
     }
     
@@ -130,22 +130,22 @@ function mergeChats(
   orgs: Organisation[]
 ): ChatOutput[] {
   // Collect all extractions per chat
-  const byChat = new Map<string, ChatExtract[]>();
+  const extractsByChatId = new Map<string, ChatExtract[]>();
   
   for (const batch of batches) {
-    for (const c of batch.chats) {
-      const list = byChat.get(c.chat_id) ?? [];
-      list.push(c);
-      byChat.set(c.chat_id, list);
+    for (const chat of batch.chats) {
+      const list = extractsByChatId.get(chat.chat_id) ?? [];
+      list.push(chat);
+      extractsByChatId.set(chat.chat_id, list);
     }
   }
   
   // Build org ID mapping (for validation)
-  const orgIds = new Set(orgs.map(o => o.id));
+  const orgIds = new Set(orgs.map(org => org.id));
   
   const chats: ChatOutput[] = [];
   
-  for (const [chatId, extracts] of byChat) {
+  for (const [chatId, extracts] of extractsByChatId) {
     const best = extracts.reduce((a, b) => a.confidence > b.confidence ? a : b);
     
     if (best.person_id) {
@@ -202,7 +202,7 @@ function mergeGoals(batches: BatchOutput[]): Goal[] {
   
   for (const group of groups) {
     const best = group.reduce((a, b) => a.confidence > b.confidence ? a : b);
-    const allEvidence = new Set(group.flatMap(g => g.evidence));
+    const allEvidence = new Set(group.flatMap(goal => goal.evidence));
     
     goals.push({
       title: best.title,
@@ -223,30 +223,30 @@ function mergeGoals(batches: BatchOutput[]): Goal[] {
  */
 function mergeLoops(batches: BatchOutput[]): OpenLoop[] {
   // Collect all loops, dedupe by source_msg
-  const bySource = new Map<string, LoopExtract[]>();
+  const extractsBySourceMsg = new Map<string, LoopExtract[]>();
   
   for (const batch of batches) {
     for (const loop of batch.loops) {
-      const list = bySource.get(loop.source_msg) ?? [];
+      const list = extractsBySourceMsg.get(loop.source_msg) ?? [];
       list.push(loop);
-      bySource.set(loop.source_msg, list);
+      extractsBySourceMsg.set(loop.source_msg, list);
     }
   }
   
   const loops: OpenLoop[] = [];
   
-  for (const extracts of bySource.values()) {
+  for (const extracts of extractsBySourceMsg.values()) {
     // Separate by status - terminal states (done/dropped) take priority
-    const terminal = extracts.filter(e => e.status === "done" || e.status === "dropped");
-    const open = extracts.filter(e => e.status === "open");
+    const terminal = extracts.filter(extract => extract.status === "done" || extract.status === "dropped");
+    const open = extracts.filter(extract => extract.status === "open");
     
     // If any batch marked it terminal, use that (more context = saw closing msg)
     // Among terminal, prefer done > dropped, then highest confidence
     let best: LoopExtract;
     if (terminal.length > 0) {
       // Prefer "done" over "dropped", then by confidence
-      const done = terminal.filter(e => e.status === "done");
-      const dropped = terminal.filter(e => e.status === "dropped");
+      const done = terminal.filter(extract => extract.status === "done");
+      const dropped = terminal.filter(extract => extract.status === "dropped");
       
       if (done.length > 0) {
         best = done.reduce((a, b) => a.confidence > b.confidence ? a : b);
@@ -270,14 +270,23 @@ function mergeLoops(batches: BatchOutput[]): OpenLoop[] {
       closed_by: best.closed_by,
     };
     
-    // Only add help for open loops (convert nullish to undefined for output schema)
-    if (best.status === "open" && best.help) {
-      loop.help = {
-        action: best.help.action,
-        next_step: best.help.next_step ?? undefined,
-        remind_at: best.help.remind_at ?? undefined,
-        reason: best.help.reason ?? undefined,
-      };
+    // Add help for ALL open loops (FAQ: "give one on every open loop")
+    if (best.status === "open") {
+      if (best.help) {
+        loop.help = {
+          action: best.help.action,
+          next_step: best.help.next_step ?? undefined,
+          needs_yes: best.help.needs_yes ?? undefined,
+          remind_at: best.help.remind_at ?? undefined,
+          reason: best.help.reason ?? undefined,
+        };
+      } else {
+        // Default: if owner is not ME (followup), default to "leave"
+        // If owner is ME but no help specified, default to "remind"
+        loop.help = best.owner === "ME" || best.owner === null
+          ? { action: "remind", remind_at: undefined }
+          : { action: "leave", reason: "Waiting on this person to complete" };
+      }
     }
     
     loops.push(loop);

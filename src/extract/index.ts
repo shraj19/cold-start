@@ -7,7 +7,6 @@ import { mergeBatches } from "./merge.js";
 import type { BatchOutput } from "./types.js";
 
 export { createBatches } from "./batch.js";
-export { extractBatch } from "./extract.js";
 export { extractBatchCot } from "./extract-cot.js";
 export { mergeBatches } from "./merge.js";
 export type { BatchOutput } from "./types.js";
@@ -39,7 +38,7 @@ export async function extract(
   const allThinking: string[] = [];
   
   // Track open loops to pass forward to later batches
-  const openLoops: PriorLoop[] = [];
+  let openLoops: PriorLoop[] = [];
   
   for (let i = 0; i < batches.length; i++) {
     const batch = batches[i]!;
@@ -59,7 +58,17 @@ export async function extract(
     results.push(output);
     if (thinking) allThinking.push(`=== Batch ${i + 1} ===\n${thinking}`);
     
-    // Collect open loops from this batch to pass forward
+    // Update open loops: add new opens, remove closed ones
+    const closedSourceMsgs = new Set(
+      output.loops
+        .filter(l => l.status === 'done' || l.status === 'dropped')
+        .map(l => l.source_msg)
+    );
+    
+    // Remove loops that got closed in this batch
+    openLoops = openLoops.filter(l => !closedSourceMsgs.has(l.source_msg));
+    
+    // Add new open loops from this batch
     for (const loop of output.loops) {
       if (loop.status === 'open') {
         // Only add if not already tracked (dedupe by source_msg)
@@ -72,6 +81,8 @@ export async function extract(
         }
       }
     }
+    
+    console.error(`    → Open loops tracked: ${openLoops.length}`);
   }
 
   // Merge results

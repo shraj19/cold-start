@@ -6,6 +6,12 @@ export interface RetryOptions {
   onRetry?: (attempt: number, delay: number, error: Error) => void;
 }
 
+/** Extract retry-after delay from error message if present (e.g. "retry in 49.6s") */
+function extractRetryAfterMs(msg: string): number | null {
+  const match = msg.match(/retry in (\d+(?:\.\d+)?)\s*s/i);
+  return match ? Math.ceil(parseFloat(match[1]!) * 1000) + 2000 : null;
+}
+
 /** Check if error is retryable (rate limit, service unavailable, timeout) */
 function isRetryableError(error: Error): boolean {
   const msg = error.message.toLowerCase();
@@ -14,6 +20,8 @@ function isRetryableError(error: Error): boolean {
     msg.includes("429") ||
     msg.includes("too many requests") ||
     msg.includes("rate limit") ||
+    msg.includes("quota exceeded") ||
+    msg.includes("quota") ||
     // Service issues
     msg.includes("503") ||
     msg.includes("service unavailable") ||
@@ -56,13 +64,14 @@ export async function withRetry<T>(
         throw lastError; // Throw original error, not wrapped
       }
 
-      // Exponential backoff: 10s, 20s, 40s, 80s, 160s
-      const delay = baseDelayMs * Math.pow(2, attempt);
+      // Use retry-after from API if available, else exponential backoff
+      const retryAfterMs = extractRetryAfterMs(lastError.message);
+      const delay = retryAfterMs ?? (baseDelayMs * Math.pow(2, attempt));
 
       if (onRetry) {
         onRetry(attempt + 1, delay, lastError);
       } else {
-        console.error(`  Retryable error (attempt ${attempt + 1}/${maxRetries + 1}), waiting ${delay / 1000}s...`);
+        console.error(`  Retryable error (attempt ${attempt + 1}/${maxRetries + 1}), waiting ${Math.round(delay / 1000)}s...`);
       }
 
       await sleep(delay);

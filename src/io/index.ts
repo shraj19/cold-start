@@ -9,9 +9,6 @@ export { readInput, readRawInput } from "./read.js";
 // Writing
 export { writeOutput } from "./write.js";
 
-// Store creation
-export { loadStore } from "./store.js";
-
 // Example loading
 export { loadExample } from "./example.js";
 

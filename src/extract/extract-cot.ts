@@ -1,10 +1,19 @@
 // Chain of Thought extraction - think first, then extract
 
+import { z } from "zod";
 import type { Message, Chat, Seed } from "../types/index.js";
 import type { Batch } from "./batch.js";
 import type { BatchOutput } from "./types.js";
-import { batchOutputSchema } from "./types.js";
-import { generatePlainText } from "../llm/index.js";
+import { 
+  batchOutputSchema, 
+  circleExtractSchema, 
+  personLinkExtractSchema, 
+  orgExtractSchema, 
+  chatExtractSchema, 
+  goalExtractSchema, 
+  loopExtractSchema 
+} from "./types.js";
+import { generatePlainText, generate } from "../llm/index.js";
 
 // ============================================================
 // System Prompt (static - sent once per API call)
@@ -50,14 +59,44 @@ YOU ARE SCORED ON THESE CRITERIA - optimize for them:
 3. PERSON-ORG LINKS: Staff → "home"/"supports", Colleagues → company/"runs"
 4. CHATS: 1:1 → person_id, GROUP → org_id
 5. GOALS: Future aspirations with evidence
-6. LOOPS: source_msg (FIRST message), owner, status, help action
+6. LOOPS: Scan EVERY message for tasks/commitments (see loop-detection below)
 </analysis-steps>
 
-<output-format>
-Return TWO sections:
+<loop-detection>
+CRITICAL: Loops are scored heavily (28/100 points). Scan EVERY message for these patterns:
 
-1. A <thinking> block with your step-by-step analysis
-2. A JSON object:
+WHAT CREATES A LOOP (source_msg = the FIRST message with this obligation):
+- "I'll..." / "I will..." / "Let me..." → ME commits to do something
+- "Can you..." / "Please..." / "Could you..." → Someone asks ME to do something  
+- "We need to..." / "Don't forget..." → Shared obligation or reminder
+- "By Monday..." / "Before the trip..." → Deadline mentioned
+- "Will you..." / "Are you going to..." → Question awaiting ME's answer
+- "I'm waiting for..." / "Still need..." → Followup on pending item
+- "Send me..." / "Get back to me..." → Request for information/action
+
+LOOP TYPES:
+- commitment: ME promised to do something ("I'll send the report")
+- followup: ME is waiting on someone else ("Waiting for Raj's quote")
+- deadline: Time-bound task ("Submit by Friday")
+- question: Unanswered question ME must respond to
+
+STATUS:
+- open: No resolution message found
+- done: Later message confirms completion ("Done", "Sent", "Finished", "✓", "Thanks, got it")
+- dropped: Explicitly cancelled or no longer relevant
+
+OWNER:
+- "ME" for commitments/deadlines/questions ME must handle
+- person_id (e.g. "P05") for followups where someone else owes ME
+
+COMMON MISTAKES:
+- Missing loops: Not scanning casual promises ("yeah I'll do it")
+- Wrong source_msg: Picking a reminder instead of the FIRST commitment
+- Too few loops: a typical large WhatsApp history has many open tasks
+</loop-detection>
+
+<output-format>
+Return ONLY a JSON object (no explanation, no thinking, just JSON):
 
 {
   "circles": [{"person_id": "P01", "circle": "spouse|child|staff|colleague|friend|vendor|...", "confidence": 0.9, "evidence": ["M001"]}],
@@ -98,7 +137,7 @@ function formatChats(chats: Chat[]): string {
     .join('\n');
 }
 
-function buildUserPrompt(batch: Batch, seed: Seed, priorLoops?: Array<{source_msg: string; title: string; owner: string}>): string {
+function buildUserPrompt(batch: Batch, seed: Seed, priorLoops?: Array<{source_msg: string; title: string; owner: string | null}>): string {
   const knownCircles = Object.entries(seed.circles)
     .map(([id, circle]) => `${id}: ${circle}`)
     .join(', ') || 'none';
@@ -224,7 +263,69 @@ function preprocessData(data: Record<string, unknown>): Record<string, unknown> 
     });
   }
   
+  // Fix loop types - map common mistakes to valid values
+  const validLoopTypes = new Set(['commitment', 'followup', 'deadline', 'question']);
+  const loopTypeMap: Record<string, string> = {
+    task: 'commitment',
+    promise: 'commitment',
+    todo: 'commitment',
+    action: 'commitment',
+    waiting: 'followup',
+    pending: 'followup',
+    'follow-up': 'followup',
+    'follow up': 'followup',
+    reminder: 'deadline',
+    due: 'deadline',
+    ask: 'question',
+    query: 'question',
+    request: 'commitment',
+  };
+  
+  if (Array.isArray(data.loops)) {
+    data.loops = data.loops
+      .filter((l: Record<string, unknown>) => l && typeof l.source_msg === 'string')
+      .map((l: Record<string, unknown>) => {
+        if (typeof l.type === 'string') {
+          const t = l.type.toLowerCase();
+          if (!validLoopTypes.has(t)) {
+            l.type = loopTypeMap[t] ?? 'commitment';  // default to commitment
+          }
+        }
+        return l;
+      });
+  }
+  
   return data;
+}
+
+/** Safely parse an array, keeping only valid items */
+function safeParseArray<T>(
+  arr: unknown,
+  schema: z.ZodType<T>,
+  label: string
+): T[] {
+  if (!Array.isArray(arr)) return [];
+  
+  const results: T[] = [];
+  let errors = 0;
+  
+  for (let i = 0; i < arr.length; i++) {
+    const result = schema.safeParse(arr[i]);
+    if (result.success) {
+      results.push(result.data);
+    } else {
+      errors++;
+      if (errors <= 2) {  // Only log first 2 errors per section
+        console.error(`    [SKIP] ${label}[${i}]: ${result.error.issues[0]?.message}`);
+      }
+    }
+  }
+  
+  if (errors > 2) {
+    console.error(`    [SKIP] ${label}: +${errors - 2} more errors`);
+  }
+  
+  return results;
 }
 
 function parseResponse(text: string): { thinking: string; data: BatchOutput } {
@@ -246,8 +347,18 @@ function parseResponse(text: string): { thinking: string; data: BatchOutput } {
   try {
     let parsed = JSON.parse(jsonMatch[0]);
     parsed = preprocessData(parsed);  // Fix common mistakes
-    const validated = batchOutputSchema.parse(parsed);
-    return { thinking, data: validated };
+    
+    // Partial validation - keep valid items even if some fail
+    const data: BatchOutput = {
+      circles: safeParseArray(parsed.circles, circleExtractSchema, 'circles'),
+      person_links: safeParseArray(parsed.person_links, personLinkExtractSchema, 'person_links'),
+      orgs: safeParseArray(parsed.orgs, orgExtractSchema, 'orgs'),
+      chats: safeParseArray(parsed.chats, chatExtractSchema, 'chats'),
+      goals: safeParseArray(parsed.goals, goalExtractSchema, 'goals'),
+      loops: safeParseArray(parsed.loops, loopExtractSchema, 'loops'),
+    };
+    
+    return { thinking, data };
   } catch (err) {
     console.error('  [DEBUG] JSON parse error. JSON part:\n', jsonMatch[0].slice(0, 2000));
     throw err;
@@ -261,7 +372,7 @@ function parseResponse(text: string): { thinking: string; data: BatchOutput } {
 export interface PriorLoop {
   source_msg: string;
   title: string;
-  owner: string;
+  owner: string | null;
 }
 
 export async function extractBatchCot(
@@ -276,18 +387,28 @@ export async function extractBatchCot(
   const userPrompt = buildUserPrompt(batch, seed, priorLoops);
   
   try {
-    const text = await generatePlainText(userPrompt, { 
-      system: SYSTEM_PROMPT,
-      temperature: 0 
-    });
-    
-    const { thinking, data } = parseResponse(text);
-    
-    const thinkingLines = thinking.split('\n').filter(l => l.trim()).length;
-    console.error(`    ✓ ${thinkingLines} lines of reasoning`);
+    // Plain text generation — model outputs JSON freely, we parse + partial validate
+    const text = await generatePlainText(userPrompt, { system: SYSTEM_PROMPT, temperature: 0 });
+
+    const jsonPart = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const jsonMatch = jsonPart.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error('  [DEBUG] No JSON found. Raw:\n', text.slice(0, 500));
+      throw new Error('No JSON found in response');
+    }
+
+    const preprocessed = preprocessData(JSON.parse(jsonMatch[0]) as Record<string, unknown>);
+    const data: BatchOutput = {
+      circles:      safeParseArray(preprocessed['circles'],      circleExtractSchema,      'circles'),
+      person_links: safeParseArray(preprocessed['person_links'], personLinkExtractSchema,  'person_links'),
+      orgs:         safeParseArray(preprocessed['orgs'],         orgExtractSchema,         'orgs'),
+      chats:        safeParseArray(preprocessed['chats'],        chatExtractSchema,        'chats'),
+      goals:        safeParseArray(preprocessed['goals'],        goalExtractSchema,        'goals'),
+      loops:        safeParseArray(preprocessed['loops'],        loopExtractSchema,        'loops'),
+    };
+
     console.error(`    ✓ ${data.circles.length} circles, ${data.orgs.length} orgs, ${data.chats.length} chats, ${data.goals.length} goals`);
-    
-    return { output: data, thinking };
+    return { output: data, thinking: '' };
   } catch (err) {
     console.error(`    ✗ ${err instanceof Error ? err.message : err}`);
     return {

@@ -10,6 +10,7 @@ export interface GenerateOptions {
   temperature?: number;
   maxRetries?: number;
   maxFixAttempts?: number;
+  maxOutputTokens?: number;  // max tokens for LLM response
 }
 
 /** Extract JSON from text (handles code blocks) */

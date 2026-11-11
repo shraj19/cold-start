@@ -181,8 +181,8 @@ export function validate(out: unknown, chats: Chat[], messages: Message[]): Vali
     if (!LOOP_TYPES.has(l.type)) {
       errors.push(`${where}: type must be one of ${[...LOOP_TYPES].sort().join(", ")}.`);
     }
-    if (l.owner !== "ME" && !personIds.has(l.owner)) {
-      errors.push(`${where}: owner must be "ME" or a person id.`);
+    if (l.owner !== "ME" && l.owner !== null && !personIds.has(l.owner)) {
+      errors.push(`${where}: owner must be "ME", null, or a person id.`);
     }
     if (!chatIds.has(l.chat_id)) {
       errors.push(`${where}: unknown chat_id.`);

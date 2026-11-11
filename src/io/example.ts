@@ -4,8 +4,8 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Output } from "../types/index.js";
 import type { ExampleData } from "./types.js";
-import { readRawInput } from "./read.js";
-import { loadStore } from "./store.js";
+import { readRawInput, readInput } from "./read.js";
+import { createStore } from "../store/index.js";
 
 /**
  * Load example data with expected output (for few-shot learning)
@@ -20,7 +20,8 @@ export function loadExample(inputDir: string): ExampleData | null {
   }
 
   try {
-    const store = loadStore(inputDir);
+    const input = readInput(inputDir);
+    const store = createStore(input);
     const raw = readRawInput(inputDir);
     const outputText = readFileSync(outputPath, "utf-8");
     const output = JSON.parse(outputText) as Output;

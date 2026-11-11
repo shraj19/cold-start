@@ -5,6 +5,7 @@ import { evalite } from "evalite";
 import { createScorer } from "evalite";
 import { readFileSync } from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
 import { readInput } from "../src/io/read.js";
 import { extract } from "../src/extract/index.js";
@@ -12,7 +13,8 @@ import type { Output } from "../src/types/index.js";
 import type { Answers } from "../src/validator/types.js";
 
 // Load example dataset
-const exampleDir = path.join(import.meta.dirname, "../example");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const exampleDir = path.join(__dirname, "../example");
 const input = readInput(exampleDir);
 const answers: Answers = JSON.parse(
   readFileSync(path.join(exampleDir, "answers/answers.json"), "utf-8")
