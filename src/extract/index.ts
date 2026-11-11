@@ -5,6 +5,8 @@ import { createChatBasedBatches } from "./batch-by-chat.js";
 import { extractBatchCot, type PriorLoop } from "./extract-cot.js";
 import { mergeBatches } from "./merge.js";
 import type { BatchOutput } from "./types.js";
+import type { ExampleData } from "../io/types.js";
+import { buildFewShotPrompt, estimateFewShotTokens } from "./few-shot.js";
 
 export { createChatBasedBatches } from "./batch-by-chat.js";
 export { extractBatchCot } from "./extract-cot.js";
@@ -18,19 +20,36 @@ export type { BatchOutput } from "./types.js";
  * 2. Extract with CoT reasoning (shows thinking, then extracts)
  * 3. Pass open loops forward to help later batches recognize closures
  * 4. Merge using confidence scores
+ * 
+ * @param chats - All chats
+ * @param messages - All messages
+ * @param seed - Seed data (known circles, orgs, goals)
+ * @param exampleData - Optional few-shot example for better accuracy
  */
 export async function extract(
   chats: Chat[],
   messages: Message[],
-  seed: Seed
+  seed: Seed,
+  exampleData?: ExampleData
 ): Promise<Output> {
   console.error(`\n=== Extraction Pipeline (Chain of Thought + Chat-Based Batching) ===`);
   console.error(`Input: ${chats.length} chats, ${messages.length} messages`);
-  console.error(`Seed: ${Object.keys(seed.circles).length} circles, ${seed.organisations.length} orgs\n`);
+  console.error(`Seed: ${Object.keys(seed.circles).length} circles, ${seed.organisations.length} orgs`);
+  
+  if (exampleData) {
+    const tokens = estimateFewShotTokens(exampleData);
+    console.error(`Few-shot: Enabled (~${tokens} tokens overhead)`);
+  } else {
+    console.error(`Few-shot: Disabled`);
+  }
+  console.error('');
 
   // Create chat-based batches (complete conversations)
   const batches = createChatBasedBatches(messages, chats);
   console.error(`Created ${batches.length} batches\n`);
+
+  // Build few-shot prompt if example provided (used for all batches)
+  const fewShotPrompt = exampleData ? buildFewShotPrompt(exampleData) : undefined;
 
   // Extract from each batch with CoT
   console.error(`--- Extracting (with reasoning) ---`);
@@ -53,7 +72,8 @@ export async function extract(
       seed, 
       i + 1, 
       batches.length,
-      relevantPriorLoops.length > 0 ? relevantPriorLoops : undefined
+      relevantPriorLoops.length > 0 ? relevantPriorLoops : undefined,
+      fewShotPrompt
     );
     results.push(output);
     if (thinking) allThinking.push(`=== Batch ${i + 1} ===\n${thinking}`);

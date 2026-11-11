@@ -380,15 +380,19 @@ export async function extractBatchCot(
   seed: Seed,
   batchNum: number,
   totalBatches: number,
-  priorLoops?: PriorLoop[]
+  priorLoops?: PriorLoop[],
+  fewShotPrompt?: string
 ): Promise<{ output: BatchOutput; thinking: string }> {
   console.error(`  Batch ${batchNum}/${totalBatches}: ${batch.messages.length} msgs, ${batch.chats.length} chats`);
   
   const userPrompt = buildUserPrompt(batch, seed, priorLoops);
   
+  // Add few-shot prompt to system prompt if provided
+  const systemPrompt = fewShotPrompt ? SYSTEM_PROMPT + '\n' + fewShotPrompt : SYSTEM_PROMPT;
+  
   try {
     // Plain text generation — model outputs JSON freely, we parse + partial validate
-    const text = await generatePlainText(userPrompt, { system: SYSTEM_PROMPT, temperature: 0 });
+    const text = await generatePlainText(userPrompt, { system: systemPrompt, temperature: 0 });
 
     const jsonPart = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
     const jsonMatch = jsonPart.match(/\{[\s\S]*\}/);
