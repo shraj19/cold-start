@@ -1,20 +1,20 @@
-// Extract module - sliding window batched extraction with Chain of Thought
+// Extract module - chat-based batched extraction with Chain of Thought
 
 import type { Chat, Message, Seed, Output } from "../types/index.js";
-import { createBatches } from "./batch.js";
+import { createChatBasedBatches } from "./batch-by-chat.js";
 import { extractBatchCot, type PriorLoop } from "./extract-cot.js";
 import { mergeBatches } from "./merge.js";
 import type { BatchOutput } from "./types.js";
 
-export { createBatches } from "./batch.js";
+export { createChatBasedBatches } from "./batch-by-chat.js";
 export { extractBatchCot } from "./extract-cot.js";
 export { mergeBatches } from "./merge.js";
 export type { BatchOutput } from "./types.js";
 
 /**
- * Run full extraction pipeline with Chain of Thought
+ * Run full extraction pipeline with Chain of Thought and chat-based batching
  * 
- * 1. Create sliding window batches (sorted by time)
+ * 1. Create chat-based batches (complete conversations per batch)
  * 2. Extract with CoT reasoning (shows thinking, then extracts)
  * 3. Pass open loops forward to help later batches recognize closures
  * 4. Merge using confidence scores
@@ -24,12 +24,12 @@ export async function extract(
   messages: Message[],
   seed: Seed
 ): Promise<Output> {
-  console.error(`\n=== Extraction Pipeline (Chain of Thought) ===`);
+  console.error(`\n=== Extraction Pipeline (Chain of Thought + Chat-Based Batching) ===`);
   console.error(`Input: ${chats.length} chats, ${messages.length} messages`);
   console.error(`Seed: ${Object.keys(seed.circles).length} circles, ${seed.organisations.length} orgs\n`);
 
-  // Create batches (uses DEFAULT_OPTIONS from batch.ts)
-  const batches = createBatches(messages, chats);
+  // Create chat-based batches (complete conversations)
+  const batches = createChatBasedBatches(messages, chats);
   console.error(`Created ${batches.length} batches\n`);
 
   // Extract from each batch with CoT

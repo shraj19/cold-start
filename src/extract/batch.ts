@@ -56,7 +56,7 @@ const DEFAULT_OPTIONS: BatchOptions = {
 };
 
 /**
- * Get batch options based on configured model or BATCH_MAX_TOKENS override
+ * Get batch options based on configured model
  */
 export function getBatchOptions(): BatchOptions {
   
@@ -75,17 +75,17 @@ export function getBatchOptions(): BatchOptions {
 /**
  * Estimate tokens for a message (conservative: ~3 chars per token + formatting overhead)
  */
-function estimateMessageTokens(msg: Message): number {
+export function estimateMessageTokens(message: Message): number {
   // Message format: "[M001] 2026-10-20 C01 | P01 (Name): body"
   const formatOverhead = 50; // ID, date, chat, sender formatting
-  const bodyTokens = Math.ceil(msg.body.length / 3);
+  const bodyTokens = Math.ceil(message.body.length / 3);
   return formatOverhead + bodyTokens;
 }
 
 /**
  * Estimate tokens for chat metadata
  */
-function estimateChatTokens(chat: Chat): number {
+export function estimateChatTokens(chat: Chat): number {
   // Format: "C01: "Name" (group) [P01, P02, P03]"
   const baseTokens = 20;
   const nameTokens = Math.ceil(chat.name.length / 3);
