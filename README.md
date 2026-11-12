@@ -52,12 +52,12 @@ One `output.json` per run with five sections:
 
 | Part | Score |
 |------|-------|
-| Circles | 9.1 / 12 |
-| Organisations | 1.7 / 8 |
-| Chats | 7.3 / 8 |
-| Loops found | 2.4 / 14 |
-| Loops status | 1.9 / 14 |
-| **Total** | **22.4 / 56** |
+| Circles | 7.9 / 12 |
+| Organisations | 1.6 / 8 |
+| Chats | 7.2 / 8 |
+| Loops found | 2.9 / 14 |
+| Loops status | 3.0 / 14 |
+| **Total** | **22.7 / 56** |
 
 Baseline: 17.5 / 56
 
