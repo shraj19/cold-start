@@ -213,7 +213,16 @@ function mergeGoals(batches: BatchOutput[]): Goal[] {
     });
   }
   
-  return goals.slice(0, 10); // Max 10 goals
+  // Sort by confidence (highest first), then cap at 10
+  // Goals with more evidence (appearing in multiple batches) rank higher
+  goals.sort((a, b) => {
+    // More evidence = more confident
+    const evidenceA = a.evidence.length;
+    const evidenceB = b.evidence.length;
+    return evidenceB - evidenceA;
+  });
+  
+  return goals.slice(0, 10); // Max 10 goals - only most confident ones
 }
 
 /**

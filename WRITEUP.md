@@ -2,85 +2,94 @@
 
 ## What I Focused On
 
-**Loop extraction accuracy** — specifically status detection (open/done/dropped) and help action classification (assist/remind/leave). These are the most nuanced parts of the scoring rubric, and early iterations showed 60-70% accuracy here while circles/chats were already at 100%.
+**Circles and chat assignment** — these scored highest (76% and 79% on dev) with relatively straightforward prompt engineering. The model correctly identifies relationships from conversation patterns.
 
-**Multi-batch architecture** — designed for 30K+ messages where single-call extraction would exceed context limits. The system uses sliding-window batching with code-based merge, keeping costs low while maintaining accuracy.
+**Loop extraction** — the most challenging part. Open loops scored only 25% due to high false positive rate (80% of extracted loops were incorrect). Status detection and help classification remain weak points.
+
+**Cost optimization** — using free models (ERNIE via OpenRouter) to minimize cost while maintaining acceptable accuracy.
 
 ## Approach
 
-### Chain of Thought Extraction
+### Chat-Based Batching
 
-Each batch goes through a two-phase LLM call:
-1. **Thinking phase** — step-by-step reasoning about people, relationships, and tasks
-2. **Structured output** — JSON matching the output schema
-
-The system prompt embeds the scoring rubric directly, so the model optimizes for what's actually measured:
-- Help action definitions (assist = prep work possible, remind = just needs nudge, leave = someone else's task)
-- Source message selection (first message creating the obligation)
-- Circle classification rules
-
-### Sliding Window Batching
+The system groups messages by chat, ensuring complete conversations stay together:
 
 ```
-Messages sorted by time → Window of 1000 msgs → LLM → BatchOutput
-                       → Next window (100 overlap) → LLM → BatchOutput
+Messages grouped by chat → Complete chats per batch → LLM → BatchOutput
                                                           ↓
-                                              Code-based merge (no LLM)
+                                              Code-based merge + post-processing
 ```
 
-**Why overlap?** Context continuity. A task created in batch N might be closed in batch N+1 — overlap ensures the closing message sees enough prior context.
+**Why chat-based?** Context integrity. Splitting a conversation mid-thread loses relationship signals and loop status changes.
 
-**Cross-batch loop tracking:** Open loops from earlier batches are passed forward as context, so later batches can recognize closures even when the source message isn't in their window.
+**Cross-batch loop tracking:** Open loops from earlier batches are passed forward, so later batches can recognize closures.
 
-### Code-Based Merge
+### Prompt Engineering Experiments
 
-No LLM tokens spent on merging. For each entity type:
-- **Circles/Chats:** Dedupe by ID, highest confidence wins, seed overrides
-- **Loops:** Dedupe by source_msg, **terminal states (done/dropped) beat open** — the batch that saw a closing message has more context
-- **Goals:** Group by area + title similarity, combine evidence
+| Approach | Score | Result |
+|----------|-------|--------|
+| CoT batching (baseline) | **23.2/56** | Best |
+| Compressed prompt | 21.8/56 | Worse |
+| Few-shot examples | 17.4/56 | Much worse |
+| Hybrid 2-call approach | 12.8/56 | Much worse |
+
+**Key finding:** Weak/free models need smaller focused calls, not compressed prompts or few-shot examples. The hybrid approach (all data in 2 calls) scored 45% worse than batching.
+
+### Post-Processing
+
+Deterministic fixes after LLM extraction:
+- Map org names to expected ID format
+- Validate loop source_msg IDs exist
+- Normalize enum values (e.g., `acquaintance` → `friend`)
 
 ## Costs
 
-**For 30,000 messages (~34 batches):**
+**Model:** `baidu/ernie-5.5-flash-preview:free` via OpenRouter
 
-| Model | Input Tokens | Output Tokens | Total Cost |
-|-------|-------------|---------------|------------|
-| DeepSeek | ~1.4M | ~68K | **~$0.25** |
-| GPT-4o | ~1.4M | ~68K | ~$4.50 |
+**Cost:** $0.00 (free tier)
 
-Using DeepSeek (`deepseek-chat`) at $0.14/1M input, $0.28/1M output.
+At OpenRouter's paid pricing for this model, estimated ~$0.01-0.02 per 1,000 messages.
 
-**Where the money goes:**
-- ~95% on message content in user prompts (40K tokens per batch)
-- ~3% on system prompt (repeated per batch, but only 800 tokens)
+**Where tokens go:**
+- ~90% on message content in prompts
+- ~8% on system prompt (scoring rules, format)
 - ~2% on output generation
-
-**For the example dataset (29 messages, 1 batch):** ~$0.001
 
 ## Where It's Wrong
 
-### Expected Errors
+### Dev Set Results (23.2/56)
 
-| Category | Expected Accuracy | Common Mistakes |
-|----------|-------------------|-----------------|
-| Circles | 95-100% | Confusing staff vs vendor for service providers |
-| Chats | 95-100% | Rare — 1:1 vs group is explicit in metadata |
-| Loops Found | 75-85% | Missing subtle commitments ("I'll think about it") |
-| Loop Status | 90-100% | Missing implicit closures (thumbs up = done?) |
-| Help Actions | 85-95% | assist vs remind boundary is subjective |
+| Category | Score | Issues |
+|----------|-------|--------|
+| Circles | 9.1/12 (76%) | Confuses colleague↔staff, relative↔friend |
+| Organisations | 1.1/8 (14%) | Missing orgs (Nexus DaaS, Farmhouse, Office) |
+| Chats | 6.3/8 (79%) | Some group chats misassigned |
+| Loops found | 3.5/14 (25%) | 80% false positives |
+| Loops closed | 3.2/14 (23%) | Misses implicit closures |
 
 ### Specific Failure Modes
 
-1. **Implicit closures** — "👍" or "done" without explicit reference to which task
-2. **Chained commitments** — "I'll book tickets" followed by "Actually, let me check prices first" — which is the source message?
-3. **Hindi/Hinglish nuance** — "Theek hai" can mean acknowledgment OR commitment depending on context
-4. **Help action edge cases** — "Finish the pitch deck" could be assist (help draft) or remind (ME must do it personally)
+1. **Loop false positives** — Model extracts casual statements as commitments ("I'll try to come" is not a loop)
+2. **Missing organizations** — Some orgs mentioned in context aren't explicitly identified
+3. **Circle confusion** — Staff vs colleague boundary unclear for some service providers
+4. **Help action subjectivity** — assist vs remind boundary is inherently subjective
 
 ### Robustness
 
-- **Invalid enum values:** Preprocessing maps common LLM mistakes (leisure→experiences, vendor→company, member→supports)
-- **Partial JSON:** Falls back gracefully if one batch fails — other batches still contribute
-- **Schema validation:** Zod validates every batch output before merge
+- **Invalid enums:** Preprocessing maps common mistakes to valid values
+- **Partial failures:** Graceful fallback if one batch fails
+- **Schema validation:** Zod validates every output before merge
+
+## Predicted vs Actual Failures
+
+| Predicted | Actual |
+|-----------|--------|
+| Loops ~75-85% | Loops 25% — much worse than expected |
+| Circles ~95% | Circles 76% — slightly worse |
+| Chats ~95% | Chats 79% — worse than expected |
+| Orgs decent | Orgs 14% — much worse (missing entities) |
+
+**Why the gap:** Free models are weaker than paid alternatives. The baseline was built assuming GPT-4o or DeepSeek quality. ERNIE struggles with nuanced extraction.
 
 ## Files
 
@@ -88,11 +97,11 @@ Using DeepSeek (`deepseek-chat`) at $0.14/1M input, $0.28/1M output.
 run.sh              # Entry point: ./run.sh <input_dir> <output.json>
 src/main.ts         # CLI wrapper
 src/extract/        # Extraction pipeline
-  index.ts          # Orchestrator (batching + merge)
-  batch.ts          # Sliding window (1000 msgs, 100 overlap)
-  extract-cot.ts    # LLM extraction with Chain of Thought
-  merge.ts          # Code-based merge (no LLM)
-  types.ts          # BatchOutput schema
+  index.ts          # Orchestrator (batching + merge + post-process)
+  batch-by-chat.ts  # Chat-based batching
+  extract-cot.ts    # LLM extraction
+  merge.ts          # Code-based merge
+  post-process.ts   # Deterministic fixes
 src/types/          # Input/output schemas
-src/validator/      # Scoring logic (matches challenge server)
+src/validator/      # Scoring logic
 ```
