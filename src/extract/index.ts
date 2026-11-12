@@ -4,6 +4,7 @@ import type { Chat, Message, Seed, Output } from "../types/index.js";
 import { createChatBasedBatches } from "./batch-by-chat.js";
 import { extractBatchCot, type PriorLoop } from "./extract-cot.js";
 import { mergeBatches } from "./merge.js";
+import { postProcess } from "./post-process.js";
 import type { BatchOutput } from "./types.js";
 import type { ExampleData } from "../io/types.js";
 import { buildFewShotPrompt, estimateFewShotTokens } from "./few-shot.js";
@@ -11,6 +12,7 @@ import { buildFewShotPrompt, estimateFewShotTokens } from "./few-shot.js";
 export { createChatBasedBatches } from "./batch-by-chat.js";
 export { extractBatchCot } from "./extract-cot.js";
 export { mergeBatches } from "./merge.js";
+export { postProcess } from "./post-process.js";
 export type { BatchOutput } from "./types.js";
 
 /**
@@ -110,13 +112,17 @@ export async function extract(
   const merged = mergeBatches(results, seed);
 
   // Build final output
-  const output: Output = {
+  let output: Output = {
     people: merged.people,
     organisations: merged.organisations,
     chats: merged.chats,
     goals: merged.goals,
     open_loops: merged.loops,
   };
+
+  // Post-process: fix org IDs, validate loops
+  const validMsgIds = new Set(messages.map(m => m.id));
+  output = postProcess(output, validMsgIds);
 
   console.error(`\n=== Final Output ===`);
   console.error(`People: ${output.people.length}`);
