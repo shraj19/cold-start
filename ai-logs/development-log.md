@@ -92,3 +92,38 @@ Fixed horizon normalization (model outputting "1 year" instead of "1yr") in prep
 Decided on DeepSeek V4.1 Flash 1017 for submission: $0.035/$0.50 per 1M tokens (~0.25× baseline cost → ~10-12/12 cost points). Added batch preset, updated .env.example, removed leaked API keys from comments.
 
 Squash-merged prompt-tuning branch into main. Final state: 22.4/56 dev, valid output, clean repo.
+
+---
+
+## Nov 12 — Model Selection Experiments
+
+After submission prep, ran a full model comparison on the example dataset to find the best cost/quality tradeoff.
+
+**Models tested on example (74 pts available):**
+
+| Model | Score | Input $/M | Output $/M | Notes |
+|-------|-------|-----------|------------|-------|
+| ERNIE 5.5 Flash | 60.7 | $0.28 | $1.13 | Best quality, 1.4x baseline cost |
+| DeepSeek V4.1 Flash 1017 | 60.6 | $0.035 | $0.50 | Near-identical quality, 0.24x baseline cost |
+| GPT-6 Luna | 54.4 | $0.10 | $0.50 | Goals failed (0/8) |
+| GLM 5.3 Flash | 52.3 | $0.04 | $0.078 | Goals failed, timeout on dev |
+| Claude Haiku 5.5 | 51.1 | $0.10 | $0.50 | Weak loops (7.8/14) |
+| MiniMax M3.1 Flash | ❌ | $0.15 | $0.60 | Insufficient credits |
+| MiMo V2.6 Flash | ❌ | — | — | Timeout |
+| GPT-6.1 Terra | ❌ | — | — | Insufficient credits (expensive) |
+
+**Batch API finding:** Claude Haiku 5.5 batch and GPT-6 Luna batch fail with our standard `/chat/completions` endpoint — they require OpenRouter's async Batch API which needs a different request format. Non-starters without code rewrite.
+
+**Decision:** DeepSeek V4.1 Flash 1017 — same quality as ERNIE, 8x cheaper, ~11/12 cost points vs ~4/12 for ERNIE.
+
+**ERNIE 3-run stability test on dev (56 pts available):**
+
+| Run | Circles | Orgs | Chats | Loops | Total |
+|-----|---------|------|-------|-------|-------|
+| 1 | 8.8 | 1.3 | 5.5 | 2.7+2.5 | 20.7 |
+| 2 | 8.8 | 1.8 | 7.2 | 2.8+2.5 | 23.1 |
+| 3 | 9.1 | 1.7 | 7.1 | 2.9+2.5 | 23.3 |
+
+Variance across runs: ~2.6 pts. Chats in run 1 dropped to 5.5/8 (non-determinism). Loops and circles are stable. This confirms LLM outputs are non-deterministic — the grader runs once, so variance matters.
+
+**Final submission model:** `deepseek/deepseek-v4.1-flash-1017` — more consistent on dev (22.7/56) and significantly cheaper.
