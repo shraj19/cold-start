@@ -17,13 +17,14 @@ export interface BatchOptions {
 const MODEL_PRESETS: Record<string, BatchOptions> = {
   // OpenRouter FREE 1M context models (best for testing)
   'baidu/ernie-5.5-flash-preview:free':         { maxTokens: 800_000, overlapTokens: 50_000 },
+  'baidu/ernie-5.5-flash-preview':              { maxTokens: 800_000, overlapTokens: 50_000 },
   'nvidia/nemotron-3.5-super-vl:free':          { maxTokens: 800_000, overlapTokens: 50_000 },
   'nvidia/nemotron-3-ultra-550b-a55b:free':     { maxTokens: 800_000, overlapTokens: 50_000 },
   'nvidia/nemotron-3.5-lightning:free':         { maxTokens: 800_000, overlapTokens: 50_000 },
   'thinkingmachines/inkling:free':              { maxTokens: 800_000, overlapTokens: 50_000 },
   'thinkingmachines/inkling-2-small:free':      { maxTokens: 800_000, overlapTokens: 50_000 },
   
-  // DeepSeek V4.1 Flash 1017 - 1M context, cheapest viable model (~0.24x baseline cost)
+  // DeepSeek V4.1 Flash 1017 - submission model, 1M context, ~0.24x baseline cost
   'deepseek/deepseek-v4.1-flash-1017':          { maxTokens: 800_000, overlapTokens: 50_000 },
   'deepseek/deepseek-v4.1-flash':               { maxTokens: 800_000, overlapTokens: 50_000 },
   

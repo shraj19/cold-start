@@ -20617,12 +20617,13 @@ var env = createEnv({
 var MODEL_PRESETS = {
   // OpenRouter FREE 1M context models (best for testing)
   "baidu/ernie-5.5-flash-preview:free": { maxTokens: 8e5, overlapTokens: 5e4 },
+  "baidu/ernie-5.5-flash-preview": { maxTokens: 8e5, overlapTokens: 5e4 },
   "nvidia/nemotron-3.5-super-vl:free": { maxTokens: 8e5, overlapTokens: 5e4 },
   "nvidia/nemotron-3-ultra-550b-a55b:free": { maxTokens: 8e5, overlapTokens: 5e4 },
   "nvidia/nemotron-3.5-lightning:free": { maxTokens: 8e5, overlapTokens: 5e4 },
   "thinkingmachines/inkling:free": { maxTokens: 8e5, overlapTokens: 5e4 },
   "thinkingmachines/inkling-2-small:free": { maxTokens: 8e5, overlapTokens: 5e4 },
-  // DeepSeek V4.1 Flash 1017 - 1M context, cheapest viable model (~0.24x baseline cost)
+  // DeepSeek V4.1 Flash 1017 - submission model, 1M context, ~0.24x baseline cost
   "deepseek/deepseek-v4.1-flash-1017": { maxTokens: 8e5, overlapTokens: 5e4 },
   "deepseek/deepseek-v4.1-flash": { maxTokens: 8e5, overlapTokens: 5e4 },
   // OpenRouter paid 1M context models
