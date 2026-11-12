@@ -1,6 +1,7 @@
 // Chain of Thought extraction - think first, then extract
 
 import { z } from "zod";
+import { appendFileSync, writeFileSync } from "fs";
 import type { Message, Chat, Seed } from "../types/index.js";
 import type { Batch } from "./batch.js";
 import type { BatchOutput } from "./types.js";
@@ -14,7 +15,7 @@ import {
   loopExtractSchema 
 } from "./types.js";
 import { generatePlainText, generate } from "../llm/index.js";
-import { SYSTEM_PROMPT } from "./prompts.js";
+import { getSystemPrompt, extractThinking, type ThinkingMode } from "./prompts.js";
 
 // ============================================================
 // User Prompt (dynamic - per batch)
@@ -101,6 +102,17 @@ function preprocessData(data: Record<string, unknown>): Record<string, unknown> 
     data.goals = data.goals.map((g: Record<string, unknown>) => {
       if (typeof g.area === 'string' && areaMap[g.area.toLowerCase()]) {
         g.area = areaMap[g.area.toLowerCase()];
+      }
+      // Fix horizon - normalize common variants
+      if (typeof g.horizon === 'string') {
+        const h = g.horizon.toLowerCase().replace(/\s+/g, '');
+        const horizonMap: Record<string, string> = {
+          '3mo': '3mo', '3month': '3mo', '3months': '3mo', 'threemonths': '3mo', 'quarter': '3mo', 'short': '3mo', 'shortterm': '3mo', 'short-term': '3mo',
+          '1yr': '1yr', '1year': '1yr', '1y': '1yr', 'oneyear': '1yr', 'year': '1yr',
+          '3yr': '3yr', '3years': '3yr', '3y': '3yr', 'threeyears': '3yr', 'medium': '3yr', 'mediumterm': '3yr',
+          '5yr': '5yr', '5years': '5yr', '5y': '5yr', 'fiveyears': '5yr', 'long': '5yr', 'longterm': '5yr', 'long-term': '5yr',
+        };
+        g.horizon = horizonMap[h] ?? '1yr'; // default to 1yr if unknown
       }
       return g;
     });
@@ -277,27 +289,72 @@ export interface PriorLoop {
   owner: string | null;
 }
 
+export interface ExtractOptions {
+  thinkingMode?: ThinkingMode;
+  thinkingOutputFile?: string;  // File to write thinking output
+  fewShotPrompt?: string;
+}
+
+/**
+ * Write thinking content to file
+ */
+function writeThinkingToFile(
+  filepath: string, 
+  batchNum: number, 
+  thinking: string,
+  append: boolean = true
+): void {
+  const content = `\n${'='.repeat(60)}\nBATCH ${batchNum}\n${'='.repeat(60)}\n${thinking}\n`;
+  
+  if (append) {
+    appendFileSync(filepath, content);
+  } else {
+    writeFileSync(filepath, content);
+  }
+}
+
 export async function extractBatchCot(
   batch: Batch,
   seed: Seed,
   batchNum: number,
   totalBatches: number,
   priorLoops?: PriorLoop[],
-  fewShotPrompt?: string
+  options: ExtractOptions = {}
 ): Promise<{ output: BatchOutput; thinking: string }> {
+  const { thinkingMode = 'disabled', thinkingOutputFile, fewShotPrompt } = options;
+  
   console.error(`  Batch ${batchNum}/${totalBatches}: ${batch.messages.length} msgs, ${batch.chats.length} chats`);
   
   const userPrompt = buildUserPrompt(batch, seed, priorLoops);
   
-  // Add few-shot prompt to system prompt if provided
-  const systemPrompt = fewShotPrompt ? SYSTEM_PROMPT + '\n' + fewShotPrompt : SYSTEM_PROMPT;
+  // Get system prompt based on thinking mode
+  let systemPrompt = getSystemPrompt(thinkingMode);
+  if (fewShotPrompt) {
+    systemPrompt = systemPrompt + '\n' + fewShotPrompt;
+  }
   
   try {
     // Plain text generation — model outputs JSON freely, we parse + partial validate
     const text = await generatePlainText(userPrompt, { system: systemPrompt, temperature: 0 });
 
-    const jsonPart = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const jsonMatch = jsonPart.match(/\{[\s\S]*\}/);
+    // Extract thinking if enabled
+    const { thinking, jsonText } = extractThinking(text);
+    
+    // Write thinking to file if enabled and thinking exists
+    if (thinkingOutputFile && thinking) {
+      writeThinkingToFile(thinkingOutputFile, batchNum, thinking, batchNum > 1);
+    }
+
+    // Try to find JSON - first in jsonText (after thinking), then in full text
+    const cleanedJson = jsonText.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    let jsonMatch = cleanedJson.match(/\{[\s\S]*\}/);
+    
+    // If no JSON after thinking, try to find it anywhere in full response
+    if (!jsonMatch) {
+      const fullCleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+      jsonMatch = fullCleaned.match(/\{[\s\S]*\}/);
+    }
+    
     if (!jsonMatch) {
       console.error('  [DEBUG] No JSON found. Raw:\n', text.slice(0, 500));
       throw new Error('No JSON found in response');
@@ -314,7 +371,7 @@ export async function extractBatchCot(
     };
 
     console.error(`    ✓ ${data.circles.length} circles, ${data.orgs.length} orgs, ${data.chats.length} chats, ${data.goals.length} goals`);
-    return { output: data, thinking: '' };
+    return { output: data, thinking };
   } catch (err) {
     console.error(`    ✗ ${err instanceof Error ? err.message : err}`);
     return {

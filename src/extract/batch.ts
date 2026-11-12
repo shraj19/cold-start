@@ -23,6 +23,10 @@ const MODEL_PRESETS: Record<string, BatchOptions> = {
   'thinkingmachines/inkling:free':              { maxTokens: 800_000, overlapTokens: 50_000 },
   'thinkingmachines/inkling-2-small:free':      { maxTokens: 800_000, overlapTokens: 50_000 },
   
+  // DeepSeek V4.1 Flash 1017 - 1M context, cheapest viable model (~0.24x baseline cost)
+  'deepseek/deepseek-v4.1-flash-1017':          { maxTokens: 800_000, overlapTokens: 50_000 },
+  'deepseek/deepseek-v4.1-flash':               { maxTokens: 800_000, overlapTokens: 50_000 },
+  
   // OpenRouter paid 1M context models
   'google/gemini-3.8-flash':     { maxTokens: 800_000, overlapTokens: 50_000 },
   'google/gemini-3.1-flash-lite':{ maxTokens: 800_000, overlapTokens: 50_000 },

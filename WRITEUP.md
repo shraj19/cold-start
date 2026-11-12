@@ -1,101 +1,48 @@
 # Cold Start Challenge — Writeup
 
-## What I Focused On
+## What I Focused On and Why
 
-**Circles and chat assignment** — these have the clearest signals in conversation patterns. Relationship words ("sir", "bhai", "mom"), message frequency, and group membership provide strong evidence.
+**Circles and chats** first — strongest signals, highest confidence returns. Relationship markers (titles, names, chat names, group membership) are reliable even without fine-tuning.
 
-**Loop extraction pipeline** — the most challenging part. Built cross-batch tracking so loops created early can be marked done/dropped when closure messages appear in later batches.
+**Loops and help actions** — 28/100 points combined, highest single bloc. I invested most prompt engineering here. The core challenge is picking the right `source_msg` and not confusing casual statements with real commitments.
 
-**Robustness over optimization** — free/cheap models produce inconsistent outputs. The system gracefully handles malformed JSON, invalid enums, and partial extractions rather than failing entirely.
+**Organizations** — scored on Jaccard similarity so a few well-populated orgs beat many sparse ones. Strategy: conservative creation, consolidate industry communities into the main company.
+
+I didn't optimize goals heavily — sparse signal in two weeks of data, and not labeled on the dev set.
 
 ## Approach
 
-### Chat-Based Batching
+### Single Large Batch
+All messages are sent in one call per batch (up to 800K tokens). Keeps full conversation context intact — a message like "ok sir" only reveals hierarchy with the surrounding exchange visible.
 
-Messages are grouped by chat, keeping complete conversations together:
-
-```
-Messages grouped by chat → Token-limited batches → LLM extraction → Merge
-```
-
-**Why?** Splitting a conversation mid-thread loses context needed to infer relationships. A message like "ok sir" only reveals hierarchy if you see the full exchange.
-
-### Cross-Batch Loop Tracking
-
-Open loops from earlier batches are passed forward, so later batches can recognize closures:
-
-```
-Batch 1: finds "I'll send invoice" (open)
-         ↓ passed as prior context
-Batch 2: sees "Invoice sent" → marks loop done
-```
+### Chain-of-Thought Extraction
+The model reasons first (inside `<thinking>` tags), then outputs JSON. This catches implicit patterns: a staff member's leave notice is a followup loop for whoever manages the house; a vendor's "will deliver tomorrow" is a followup for ME.
 
 ### Confidence-Based Merge
-
-When batches disagree, highest confidence wins. Terminal states (done/dropped) override open — the batch that saw the closing message has better context.
+When batches disagree, highest confidence wins. Terminal loop states (done/dropped) override open — the batch that saw the closing message has the right answer.
 
 ### Post-Processing
-
-Only data-driven validation:
-- Drop loops with invalid `source_msg` (not in input messages)
-- No hardcoded IDs that would break on hidden set
+Only data-driven validation — drops loops whose `source_msg` isn't in the input. No hardcoded IDs that would fail on the hidden set.
 
 ## Cost
 
-**Model:** `deepseek/deepseek-v4.1-flash-1017` via OpenRouter
+**Submission model:** `deepseek/deepseek-v4.1-flash-1017` via OpenRouter  
+**Pricing:** ~$0.035/M input, $0.50/M output tokens  
+**Estimated cost:** ~$0.009–0.015 per 1,000 messages (≈ 0.25× baseline)
 
-**Pricing:** $0.07/M input, $0.28/M output tokens
-
-**Estimated cost:** ~$0.02–0.04 per 1,000 messages
-
-**Where tokens go:**
-- ~90% on message content in prompts
-- ~8% on system prompt (scoring rules, format)
-- ~2% on output generation
+Where tokens go: ~90% message content, ~8% system prompt, ~2% output JSON.
 
 ## Where It's Wrong
 
-### Expected Failure Modes
+| Part | Expected accuracy | Main failure mode |
+|------|-------------------|-------------------|
+| Circles | ~75% | colleague↔staff, relative↔friend at edges |
+| Organisations | ~25-40% | Missing implicit secondary orgs (spouse's business) |
+| Chats | ~85-90% | Group chats with ambiguous context |
+| Loops found | ~20-30% | Wrong `source_msg` (picks vague msg not concrete one) |
+| Loop status | ~40-60% | Implicit closures ("ok" ≠ always done) |
+| Help actions | ~50-60% | assist vs remind boundary is subjective |
 
-| Category | Expected Accuracy | Issue |
-|----------|-------------------|-------|
-| Circles | ~75-80% | Confuses colleague↔staff, relative↔friend |
-| Organizations | ~20-30% | Missing implicit orgs not named directly |
-| Chats | ~75-85% | Some group chats misassigned |
-| Loops found | ~30-40% | False positives from casual statements |
-| Loop status | ~40-50% | Misses implicit closures ("Thanks" = done?) |
-| Help actions | ~50% | assist vs remind boundary is subjective |
+**Biggest known weakness:** loop `source_msg` selection. The model finds the right conceptual task but points to a slightly different message than the answer key. Even a correct loop title doesn't score if the message ID is wrong.
 
-### Specific Weaknesses
-
-1. **Loop false positives** — "I'll try to come" extracted as commitment when it's not
-2. **Implicit organizations** — "the office" creates an org, but which one?
-3. **Help action subjectivity** — what counts as "assistant can prep" varies by person
-4. **Cross-chat loops** — task in one chat, closure in another (~10% of cases)
-
-### What I Didn't Optimize
-
-- **Organizations** — requires understanding implicit membership from context
-- **Help actions** — would need real user feedback to calibrate assist/remind/leave
-- **Goals** — sparse signal in short time windows; not scored heavily on dev
-
-## Files
-
-```
-run.sh              # Entry: ./run.sh <input_dir> <output.json>
-src/
-├── main.ts         # CLI wrapper
-├── extract/        # Core pipeline
-│   ├── index.ts    # Orchestrator
-│   ├── prompts.ts  # System prompt
-│   ├── batch-by-chat.ts
-│   ├── extract-cot.ts
-│   ├── merge.ts
-│   └── post-process.ts
-├── types/          # Schemas
-├── io/             # File I/O
-└── llm/            # LLM client with retry
-docs/
-├── DIAGRAMS.md     # Architecture diagrams
-└── APPROACHES.md   # Design decisions
-```
+**What I'd fix with more time:** a post-processing step that, for each found loop, searches nearby messages for a better-matching `source_msg` candidate using the loop title as a semantic anchor.

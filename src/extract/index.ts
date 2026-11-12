@@ -2,18 +2,26 @@
 
 import type { Chat, Message, Seed, Output } from "../types/index.js";
 import { createChatBasedBatches } from "./batch-by-chat.js";
-import { extractBatchCot, type PriorLoop } from "./extract-cot.js";
+import { extractBatchCot, type PriorLoop, type ExtractOptions } from "./extract-cot.js";
 import { mergeBatches } from "./merge.js";
 import { postProcess } from "./post-process.js";
 import type { BatchOutput } from "./types.js";
 import type { ExampleData } from "../io/types.js";
 import { buildFewShotPrompt, estimateFewShotTokens } from "./few-shot.js";
+import type { ThinkingMode } from "./prompts.js";
 
 export { createChatBasedBatches } from "./batch-by-chat.js";
 export { extractBatchCot } from "./extract-cot.js";
 export { mergeBatches } from "./merge.js";
 export { postProcess } from "./post-process.js";
 export type { BatchOutput } from "./types.js";
+export type { ThinkingMode } from "./prompts.js";
+
+export interface ExtractionOptions {
+  thinkingMode?: ThinkingMode;
+  thinkingOutputFile?: string;
+  exampleData?: ExampleData;
+}
 
 /**
  * Run full extraction pipeline with Chain of Thought and chat-based batching
@@ -26,17 +34,20 @@ export type { BatchOutput } from "./types.js";
  * @param chats - All chats
  * @param messages - All messages
  * @param seed - Seed data (known circles, orgs, goals)
- * @param exampleData - Optional few-shot example for better accuracy
+ * @param options - Extraction options (thinking mode, output file, example data)
  */
 export async function extract(
   chats: Chat[],
   messages: Message[],
   seed: Seed,
-  exampleData?: ExampleData
+  options: ExtractionOptions = {}
 ): Promise<Output> {
+  const { thinkingMode = 'disabled', thinkingOutputFile, exampleData } = options;
+  
   console.error(`\n=== Extraction Pipeline (Chain of Thought + Chat-Based Batching) ===`);
   console.error(`Input: ${chats.length} chats, ${messages.length} messages`);
   console.error(`Seed: ${Object.keys(seed.circles).length} circles, ${seed.organisations.length} orgs`);
+  console.error(`Thinking: ${thinkingMode}${thinkingOutputFile ? ` → ${thinkingOutputFile}` : ''}`);
   
   if (exampleData) {
     const tokens = estimateFewShotTokens(exampleData);
@@ -69,13 +80,19 @@ export async function extract(
     // (if source is in this batch, the LLM will see it directly)
     const relevantPriorLoops = openLoops.filter(l => !batchMsgIds.has(l.source_msg));
     
+    const extractOptions: ExtractOptions = {
+      thinkingMode,
+      thinkingOutputFile,
+      fewShotPrompt,
+    };
+    
     const { output, thinking } = await extractBatchCot(
       batch, 
       seed, 
       i + 1, 
       batches.length,
       relevantPriorLoops.length > 0 ? relevantPriorLoops : undefined,
-      fewShotPrompt
+      extractOptions
     );
     results.push(output);
     if (thinking) allThinking.push(`=== Batch ${i + 1} ===\n${thinking}`);
@@ -130,12 +147,6 @@ export async function extract(
   console.error(`Chats: ${output.chats.length}`);
   console.error(`Goals: ${output.goals.length}`);
   console.error(`Open Loops: ${output.open_loops.length}\n`);
-
-  // Optionally log thinking
-  if (allThinking.length > 0) {
-    console.error(`\n--- Model Reasoning ---`);
-    console.error(allThinking.join('\n\n').slice(0, 2000) + '...\n');
-  }
 
   return output;
 }

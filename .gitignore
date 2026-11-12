@@ -10,6 +10,7 @@ example/
 # secrets
 .env
 .env.local
+secrets/
 
 # outputs / run artifacts
 out.json
@@ -22,6 +23,7 @@ dev*.json
 test-*.json
 debug_*.txt
 run_log.txt
+thinking.txt
 
 # internal experiment docs (not for submission)
 internal/

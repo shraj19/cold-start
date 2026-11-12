@@ -1,52 +1,43 @@
-// Main entry point - extraction with optional few-shot learning
+// Main entry point - extraction pipeline
 
 import { readInput } from "./io/read.js";
 import { writeOutput } from "./io/write.js";
-import { loadExample } from "./io/example.js";
 import { extract } from "./extract/index.js";
+
+// ============================================================
+// Configuration - change these for testing/tuning
+// ============================================================
+const THINKING_MODE = 'enabled' as const;  // 'enabled' | 'disabled'
+const THINKING_OUTPUT_FILE: string | undefined = 'thinking.txt';  // 'thinking.txt' to enable
+// ============================================================
 
 async function main() {
   const args = process.argv.slice(2);
   
   if (args.length < 2) {
-    console.error("Usage: npx tsx src/main.ts <input_dir> <output.json> [--few-shot <example_dir>]");
-    console.error("");
-    console.error("Example:");
-    console.error("  npx tsx src/main.ts dev output.json");
-    console.error("  npx tsx src/main.ts dev output.json --few-shot example");
+    console.error("Usage: npx tsx src/main.ts <input_dir> <output.json>");
     process.exit(2);
   }
 
-  const [inputDir, outputPath, ...rest] = args;
-  
-  // Check for --few-shot flag
-  let exampleDir: string | undefined;
-  const fewShotIndex = rest.indexOf('--few-shot');
-  if (fewShotIndex !== -1 && rest[fewShotIndex + 1]) {
-    exampleDir = rest[fewShotIndex + 1];
-  }
+  const [inputDir, outputPath] = args;
 
   try {
     // Read input
     console.error(`Reading from ${inputDir}...`);
     const input = readInput(inputDir!);
 
-    // Optionally load few-shot example
-    let exampleData;
-    if (exampleDir) {
-      console.error(`Loading few-shot example from ${exampleDir}...`);
-      exampleData = loadExample(exampleDir);
-      if (!exampleData) {
-        console.error(`Warning: Could not load example from ${exampleDir}, continuing without few-shot`);
-      }
-    }
-
-    // Run extraction (with optional few-shot)
-    const output = await extract(input.chats, input.messages, input.seed, exampleData ?? undefined);
+    // Run extraction
+    const output = await extract(input.chats, input.messages, input.seed, {
+      thinkingMode: THINKING_MODE,
+      thinkingOutputFile: THINKING_OUTPUT_FILE,
+    });
 
     // Write output
     writeOutput(outputPath!, output);
     console.error(`Output written to ${outputPath}`);
+    
+    // Explicit success exit
+    process.exit(0);
 
   } catch (err) {
     console.error("Error:", err instanceof Error ? err.message : err);
