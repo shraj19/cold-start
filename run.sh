@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # The one command graders run:  ./run.sh <input_dir> <output.json>
-# Must finish in 30 minutes on a clean Linux machine.
+# Runs pre-bundled dist/main.cjs — only requires Node.js, no install needed.
 set -euo pipefail
 
 if [ "$#" -ne 2 ]; then
@@ -10,14 +10,17 @@ fi
 
 cd "$(dirname "$0")"
 
-# Install deps if needed (clean machine). Prefer a fast, reproducible install.
-if [ ! -d node_modules ]; then
-  if command -v pnpm >/dev/null 2>&1; then
-    pnpm install --frozen-lockfile
-  else
-    npm ci || npm install
-  fi
+# Use pre-bundled file if available (no install needed)
+if [ -f dist/main.cjs ]; then
+  node dist/main.cjs "$1" "$2"
+  exit $?
 fi
 
-# tsx runs the TypeScript entry point directly, no build step.
+# Fallback: install deps and run via tsx
+echo "dist/main.cjs not found, falling back to tsx..." >&2
+if command -v pnpm >/dev/null 2>&1; then
+  pnpm install --frozen-lockfile
+else
+  npm install
+fi
 npx tsx src/main.ts "$1" "$2"
