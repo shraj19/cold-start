@@ -1,5 +1,43 @@
 # Error Analysis and Solutions
 
+## Current Status
+- **Best Score:** 23.2/56 (CoT batching baseline, saved in `dev-no-fewshot.json`)
+- **Model:** ERNIE 5.5 Flash Preview (free via OpenRouter)
+
+## What We Tried and Results
+
+| Approach | Score | Notes |
+|----------|-------|-------|
+| CoT batching (baseline) | **23.2/56** | Best result |
+| Compressed prompt | 21.8/56 | Worse - weak models need scaffolding |
+| Longer prompts | 21.3/56 | Worse |
+| Few-shot examples | 17.4/56 | Much worse |
+| CoT thinking block | 17.7/56 | Much worse |
+| Hybrid 2-call approach | 12.8/56 | Much worse - model struggles with all data at once |
+
+## Key Findings
+
+### 1. Org ID Format Doesn't Affect Score
+- We output: `postmyad`, `nexus`, `home`
+- Answers expect: `O5`, `O7`, `O6`
+- **But scoring uses membership overlap (Jaccard similarity)**, not ID matching
+- Post-processing to map IDs doesn't change score
+
+### 2. LLM Output Varies Each Run
+- Each run produces different results due to model randomness
+- Best strategy: run multiple times, keep best output
+- The 23.2/56 score was a specific good run
+
+### 3. Weak Models Need Smaller Focused Calls
+- CoT batching (smaller chunks) works better than 2 big calls
+- The hybrid approach (all data in 2 calls) scored 45% worse
+- Model struggles to maintain focus on large context
+
+### 4. Loop False Positives
+- 80% of extracted loops are false positives
+- Aggressive filtering (cap at 2 per chat) hurt recall
+- Minimal validation (check source_msg exists) is safer
+
 ## Current Performance (Baseline)
 
 **Dev Dataset:** 23.2/56 (41.4%)
