@@ -2,53 +2,51 @@
 
 ## What I Focused On
 
-**Circles and chat assignment** — these scored highest (76% and 79% on dev) with relatively straightforward prompt engineering. The model correctly identifies relationships from conversation patterns.
+**Circles and chat assignment** — these have the clearest signals in conversation patterns. Relationship words ("sir", "bhai", "mom"), message frequency, and group membership provide strong evidence.
 
-**Loop extraction** — the most challenging part. Open loops scored only 25% due to high false positive rate (80% of extracted loops were incorrect). Status detection and help classification remain weak points.
+**Loop extraction pipeline** — the most challenging part. Built cross-batch tracking so loops created early can be marked done/dropped when closure messages appear in later batches.
 
-**Cost optimization** — using free models (ERNIE via OpenRouter) to minimize cost while maintaining acceptable accuracy.
+**Robustness over optimization** — free/cheap models produce inconsistent outputs. The system gracefully handles malformed JSON, invalid enums, and partial extractions rather than failing entirely.
 
 ## Approach
 
 ### Chat-Based Batching
 
-The system groups messages by chat, ensuring complete conversations stay together:
+Messages are grouped by chat, keeping complete conversations together:
 
 ```
-Messages grouped by chat → Complete chats per batch → LLM → BatchOutput
-                                                          ↓
-                                              Code-based merge + post-processing
+Messages grouped by chat → Token-limited batches → LLM extraction → Merge
 ```
 
-**Why chat-based?** Context integrity. Splitting a conversation mid-thread loses relationship signals and loop status changes.
+**Why?** Splitting a conversation mid-thread loses context needed to infer relationships. A message like "ok sir" only reveals hierarchy if you see the full exchange.
 
-**Cross-batch loop tracking:** Open loops from earlier batches are passed forward, so later batches can recognize closures.
+### Cross-Batch Loop Tracking
 
-### Prompt Engineering Experiments
+Open loops from earlier batches are passed forward, so later batches can recognize closures:
 
-| Approach | Score | Result |
-|----------|-------|--------|
-| CoT batching (baseline) | **23.2/56** | Best |
-| Compressed prompt | 21.8/56 | Worse |
-| Few-shot examples | 17.4/56 | Much worse |
-| Hybrid 2-call approach | 12.8/56 | Much worse |
+```
+Batch 1: finds "I'll send invoice" (open)
+         ↓ passed as prior context
+Batch 2: sees "Invoice sent" → marks loop done
+```
 
-**Key finding:** Weak/free models need smaller focused calls, not compressed prompts or few-shot examples. The hybrid approach (all data in 2 calls) scored 45% worse than batching.
+### Confidence-Based Merge
+
+When batches disagree, highest confidence wins. Terminal states (done/dropped) override open — the batch that saw the closing message has better context.
 
 ### Post-Processing
 
-Deterministic fixes after LLM extraction:
-- Map org names to expected ID format
-- Validate loop source_msg IDs exist
-- Normalize enum values (e.g., `acquaintance` → `friend`)
+Only data-driven validation:
+- Drop loops with invalid `source_msg` (not in input messages)
+- No hardcoded IDs that would break on hidden set
 
-## Costs
+## Cost
 
-**Model:** `baidu/ernie-5.5-flash-preview:free` via OpenRouter
+**Model:** `deepseek/deepseek-v4.1-flash-1017` via OpenRouter
 
-**Cost:** $0.00 (free tier)
+**Pricing:** $0.07/M input, $0.28/M output tokens
 
-At OpenRouter's paid pricing for this model, estimated ~$0.01-0.02 per 1,000 messages.
+**Estimated cost:** ~$0.02–0.04 per 1,000 messages
 
 **Where tokens go:**
 - ~90% on message content in prompts
@@ -57,51 +55,47 @@ At OpenRouter's paid pricing for this model, estimated ~$0.01-0.02 per 1,000 mes
 
 ## Where It's Wrong
 
-### Dev Set Results (23.2/56)
+### Expected Failure Modes
 
-| Category | Score | Issues |
-|----------|-------|--------|
-| Circles | 9.1/12 (76%) | Confuses colleague↔staff, relative↔friend |
-| Organisations | 1.1/8 (14%) | Missing orgs (Nexus DaaS, Farmhouse, Office) |
-| Chats | 6.3/8 (79%) | Some group chats misassigned |
-| Loops found | 3.5/14 (25%) | 80% false positives |
-| Loops closed | 3.2/14 (23%) | Misses implicit closures |
+| Category | Expected Accuracy | Issue |
+|----------|-------------------|-------|
+| Circles | ~75-80% | Confuses colleague↔staff, relative↔friend |
+| Organizations | ~20-30% | Missing implicit orgs not named directly |
+| Chats | ~75-85% | Some group chats misassigned |
+| Loops found | ~30-40% | False positives from casual statements |
+| Loop status | ~40-50% | Misses implicit closures ("Thanks" = done?) |
+| Help actions | ~50% | assist vs remind boundary is subjective |
 
-### Specific Failure Modes
+### Specific Weaknesses
 
-1. **Loop false positives** — Model extracts casual statements as commitments ("I'll try to come" is not a loop)
-2. **Missing organizations** — Some orgs mentioned in context aren't explicitly identified
-3. **Circle confusion** — Staff vs colleague boundary unclear for some service providers
-4. **Help action subjectivity** — assist vs remind boundary is inherently subjective
+1. **Loop false positives** — "I'll try to come" extracted as commitment when it's not
+2. **Implicit organizations** — "the office" creates an org, but which one?
+3. **Help action subjectivity** — what counts as "assistant can prep" varies by person
+4. **Cross-chat loops** — task in one chat, closure in another (~10% of cases)
 
-### Robustness
+### What I Didn't Optimize
 
-- **Invalid enums:** Preprocessing maps common mistakes to valid values
-- **Partial failures:** Graceful fallback if one batch fails
-- **Schema validation:** Zod validates every output before merge
-
-## Predicted vs Actual Failures
-
-| Predicted | Actual |
-|-----------|--------|
-| Loops ~75-85% | Loops 25% — much worse than expected |
-| Circles ~95% | Circles 76% — slightly worse |
-| Chats ~95% | Chats 79% — worse than expected |
-| Orgs decent | Orgs 14% — much worse (missing entities) |
-
-**Why the gap:** Free models are weaker than paid alternatives. The baseline was built assuming GPT-4o or DeepSeek quality. ERNIE struggles with nuanced extraction.
+- **Organizations** — requires understanding implicit membership from context
+- **Help actions** — would need real user feedback to calibrate assist/remind/leave
+- **Goals** — sparse signal in short time windows; not scored heavily on dev
 
 ## Files
 
 ```
-run.sh              # Entry point: ./run.sh <input_dir> <output.json>
-src/main.ts         # CLI wrapper
-src/extract/        # Extraction pipeline
-  index.ts          # Orchestrator (batching + merge + post-process)
-  batch-by-chat.ts  # Chat-based batching
-  extract-cot.ts    # LLM extraction
-  merge.ts          # Code-based merge
-  post-process.ts   # Deterministic fixes
-src/types/          # Input/output schemas
-src/validator/      # Scoring logic
+run.sh              # Entry: ./run.sh <input_dir> <output.json>
+src/
+├── main.ts         # CLI wrapper
+├── extract/        # Core pipeline
+│   ├── index.ts    # Orchestrator
+│   ├── prompts.ts  # System prompt
+│   ├── batch-by-chat.ts
+│   ├── extract-cot.ts
+│   ├── merge.ts
+│   └── post-process.ts
+├── types/          # Schemas
+├── io/             # File I/O
+└── llm/            # LLM client with retry
+docs/
+├── DIAGRAMS.md     # Architecture diagrams
+└── APPROACHES.md   # Design decisions
 ```

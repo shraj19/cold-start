@@ -275,32 +275,3 @@
      │  ]                                       │
      └──────────────────────────────────────────┘
 ```
-
----
-
-## Codebase Structure
-
-```
-src/
-├── main.ts                 # CLI entry point
-├── env.ts                  # Environment variables
-│
-├── extract/                # Extraction pipeline
-│   ├── index.ts            # Orchestrator
-│   ├── batch.ts            # Token-based batching
-│   ├── batch-by-chat.ts    # Chat-based batching
-│   ├── extract-cot.ts      # LLM extraction + prompts
-│   ├── merge.ts            # Merge batch outputs
-│   ├── post-process.ts     # Deterministic fixes
-│   ├── few-shot.ts         # Few-shot examples
-│   └── types.ts            # BatchOutput types
-│
-├── types/                  # Schema types
-│   ├── enums.ts            # CIRCLES, ORG_TYPES, etc.
-│   ├── input.ts            # Message, Chat, Seed
-│   └── output/             # Person, Organisation, etc.
-│
-├── io/                     # File I/O
-├── llm/                    # LLM client
-└── validator/              # Scoring
-```

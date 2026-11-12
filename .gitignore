@@ -1,9 +1,6 @@
 # dependencies
 node_modules/
 
-# development / testing (not needed for submission)
-evals/
-
 # never commit the challenge data or the answers
 data/
 dev/
@@ -21,6 +18,13 @@ test-output.json
 *-output.json
 usage.jsonl
 errors.jsonl
+dev*.json
+test-*.json
+debug_*.txt
+run_log.txt
+
+# internal experiment docs (not for submission)
+internal/
 
 # os / editor
 .DS_Store

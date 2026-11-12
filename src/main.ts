@@ -42,7 +42,7 @@ async function main() {
     }
 
     // Run extraction (with optional few-shot)
-    const output = await extract(input.chats, input.messages, input.seed, exampleData);
+    const output = await extract(input.chats, input.messages, input.seed, exampleData ?? undefined);
 
     // Write output
     writeOutput(outputPath!, output);

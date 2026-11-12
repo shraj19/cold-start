@@ -2,86 +2,97 @@
 // Better context quality for relationship/org/loop extraction
 
 import type { Message, Chat } from "../types/index.js";
-import type { Batch, BatchOptions } from "./batch.js";
+import type { Batch } from "./batch.js";
 import { getBatchOptions, estimateMessageTokens, estimateChatTokens } from "./batch.js";
 
+// ============================================================
+// Types
+// ============================================================
+
+interface ChatWithMetadata {
+  chat: Chat;
+  messages: Message[];
+  firstTimestamp: number;
+  tokenCount: number;
+}
+
+// ============================================================
+// Helper Functions (single responsibility each)
+// ============================================================
+
 /**
- * Create batches by grouping complete chats (not splitting conversations)
- * 
- * Strategy:
- * 1. Group all messages by chat_id
- * 2. Sort each chat's messages chronologically (preserve conversation flow)
- * 3. Sort chats by their first message timestamp (rough temporal ordering)
- * 4. Pack complete chats into token-limited batches
- * 
- * Pros:
- * - LLM sees complete conversation context
- * - Better relationship/circle inference
- * - Better org extraction (full participant lists)
- * - Better within-chat loop detection
- * - Simpler entity merging (less duplication)
- * 
- * Cons:
- * - May miss cross-chat loop closures (~10% of loops)
- * - No strict temporal ordering across chats
+ * Group messages by chat_id
  */
-export function createChatBasedBatches(messages: Message[], chats: Chat[]): Batch[] {
-  const options = getBatchOptions();
-  
-  // Group messages by chat_id
+function groupMessagesByChat(messages: Message[]): Map<string, Message[]> {
   const messagesByChat = new Map<string, Message[]>();
+  
   for (const message of messages) {
     const chatMessages = messagesByChat.get(message.chat_id) ?? [];
     chatMessages.push(message);
     messagesByChat.set(message.chat_id, chatMessages);
   }
   
-  // Sort each chat's messages chronologically
+  return messagesByChat;
+}
+
+/**
+ * Sort messages in each chat chronologically
+ */
+function sortMessagesChronologically(messagesByChat: Map<string, Message[]>): void {
   for (const chatMessages of messagesByChat.values()) {
     chatMessages.sort((a, b) => a.ts - b.ts);
   }
+}
+
+/**
+ * Calculate metadata for a single chat (tokens, timestamp)
+ */
+function calculateChatMetadata(chat: Chat, messages: Message[]): ChatWithMetadata {
+  const firstTimestamp = messages.length > 0 
+    ? Math.min(...messages.map(m => m.ts))
+    : 0;
   
-  // Calculate chat metadata for batching
-  interface ChatWithMetadata {
-    chat: Chat;
-    messages: Message[];
-    firstTimestamp: number;
-    tokenCount: number;
-  }
+  const messageTokens = messages.reduce((sum, msg) => sum + estimateMessageTokens(msg), 0);
+  const chatMetadataTokens = estimateChatTokens(chat);
+  const tokenCount = messageTokens + chatMetadataTokens;
   
-  const chatsWithMetadata: ChatWithMetadata[] = chats
+  return {
+    chat,
+    messages,
+    firstTimestamp,
+    tokenCount,
+  };
+}
+
+/**
+ * Build metadata for all chats, filtering empty ones
+ */
+function buildChatsWithMetadata(
+  chats: Chat[], 
+  messagesByChat: Map<string, Message[]>
+): ChatWithMetadata[] {
+  return chats
     .map(chat => {
       const chatMessages = messagesByChat.get(chat.chat_id) ?? [];
-      const firstTimestamp = chatMessages.length > 0 
-        ? Math.min(...chatMessages.map(m => m.ts))
-        : 0;
-      
-      // Calculate tokens for this complete chat
-      const messageTokens = chatMessages.reduce((sum, msg) => sum + estimateMessageTokens(msg), 0);
-      const chatMetadataTokens = estimateChatTokens(chat);
-      const tokenCount = messageTokens + chatMetadataTokens;
-      
-      return {
-        chat,
-        messages: chatMessages,
-        firstTimestamp,
-        tokenCount,
-      };
+      return calculateChatMetadata(chat, chatMessages);
     })
-    .filter(c => c.messages.length > 0); // Skip empty chats
-  
-  // Sort chats by first message timestamp (rough chronological ordering)
-  chatsWithMetadata.sort((a, b) => a.firstTimestamp - b.firstTimestamp);
-  
-  // Pack chats into token-limited batches
+    .filter(c => c.messages.length > 0);
+}
+
+/**
+ * Pack chats into token-limited batches
+ */
+function packIntoBatches(
+  chatsWithMetadata: ChatWithMetadata[], 
+  maxTokens: number
+): Batch[] {
   const batches: Batch[] = [];
   let currentBatch: Batch = { messages: [], chats: [] };
   let currentTokens = 0;
   
   for (const chatData of chatsWithMetadata) {
-    // If adding this chat would exceed token limit, start new batch
-    // (unless current batch is empty - then we must include it even if over limit)
-    if (currentTokens + chatData.tokenCount > options.maxTokens && currentBatch.chats.length > 0) {
+    // Start new batch if this chat would exceed limit (unless batch is empty)
+    if (currentTokens + chatData.tokenCount > maxTokens && currentBatch.chats.length > 0) {
       batches.push(currentBatch);
       currentBatch = { messages: [], chats: [] };
       currentTokens = 0;
@@ -98,7 +109,13 @@ export function createChatBasedBatches(messages: Message[], chats: Chat[]): Batc
     batches.push(currentBatch);
   }
   
-  // Log batch statistics
+  return batches;
+}
+
+/**
+ * Log batch statistics
+ */
+function logBatchStats(chatsWithMetadata: ChatWithMetadata[], batches: Batch[]): void {
   console.error(`\nChat-based batching:`);
   console.error(`  Total chats: ${chatsWithMetadata.length}`);
   console.error(`  Created ${batches.length} batches`);
@@ -107,11 +124,56 @@ export function createChatBasedBatches(messages: Message[], chats: Chat[]): Batc
     console.error(`  Batch ${i + 1}: ${batch.chats.length} chats, ${batch.messages.length} messages`);
   }
   console.error('');
+}
+
+// ============================================================
+// Main Function (orchestrates helpers)
+// ============================================================
+
+/**
+ * Create batches by grouping complete chats (not splitting conversations)
+ * 
+ * Strategy:
+ * 1. Group all messages by chat_id
+ * 2. Sort each chat's messages chronologically
+ * 3. Sort chats by their first message timestamp
+ * 4. Pack complete chats into token-limited batches
+ * 
+ * Pros:
+ * - LLM sees complete conversation context
+ * - Better relationship/circle inference
+ * - Better org extraction (full participant lists)
+ * - Better within-chat loop detection
+ * 
+ * Cons:
+ * - May miss cross-chat loop closures (~10% of loops)
+ * - No strict temporal ordering across chats
+ */
+export function createChatBasedBatches(messages: Message[], chats: Chat[]): Batch[] {
+  const options = getBatchOptions();
+  
+  // Step 1: Group messages by chat
+  const messagesByChat = groupMessagesByChat(messages);
+  
+  // Step 2: Sort each chat's messages chronologically
+  sortMessagesChronologically(messagesByChat);
+  
+  // Step 3: Build metadata for all chats
+  const chatsWithMetadata = buildChatsWithMetadata(chats, messagesByChat);
+  
+  // Step 4: Sort chats by first message timestamp
+  chatsWithMetadata.sort((a, b) => a.firstTimestamp - b.firstTimestamp);
+  
+  // Step 5: Pack into token-limited batches
+  const batches = packIntoBatches(chatsWithMetadata, options.maxTokens);
+  
+  // Log stats
+  logBatchStats(chatsWithMetadata, batches);
   
   return batches;
 }
 
 /**
- * Export both functions for easy comparison testing
+ * Export time-based batching for comparison testing
  */
 export { createBatches as createTimeBasedBatches } from "./batch.js";

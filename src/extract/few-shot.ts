@@ -20,8 +20,8 @@ import type { ExampleData } from "../io/types.js";
  */
 export function buildFewShotPrompt(example: ExampleData): string {
   // Format example messages (show a sample, not all to save tokens)
-  const sampleMessages = example.store
-    .getMessages()
+  // Get all messages from the store's messages array
+  const sampleMessages = example.store.messages
     .slice(0, 10) // First 10 messages as example
     .map(m => {
       const date = new Date(m.ts * 1000).toISOString().slice(0, 10);
