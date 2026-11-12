@@ -8,7 +8,7 @@ import { extract } from "./extract/index.js";
 // Configuration - change these for testing/tuning
 // ============================================================
 const THINKING_MODE = 'enabled' as const;  // 'enabled' | 'disabled'
-const THINKING_OUTPUT_FILE: string | undefined = 'thinking.txt';  // 'thinking.txt' to enable
+const THINKING_OUTPUT_FILE: string | undefined = undefined;  // set to 'thinking.txt' for local debugging
 // ============================================================
 
 async function main() {
