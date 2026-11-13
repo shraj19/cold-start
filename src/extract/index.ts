@@ -126,7 +126,8 @@ export async function extract(
 
   // Merge results
   console.error(`\n--- Merging ---`);
-  const merged = mergeBatches(results, seed);
+  const allChatIds = chats.map(c => c.chat_id);
+  const merged = mergeBatches(results, seed, allChatIds);
 
   // Build final output
   let output: Output = {

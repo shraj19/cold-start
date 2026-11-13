@@ -107,9 +107,12 @@ function mergeOrgs(batches: BatchOutput[]): Organisation[] {
   }
   
   const orgs: Organisation[] = [];
+  const seenIds = new Set<string>();
   
   for (const extracts of byName.values()) {
     const best = extracts.reduce((a, b) => a.confidence > b.confidence ? a : b);
+    if (seenIds.has(best.id)) continue; // skip duplicate IDs
+    seenIds.add(best.id);
     orgs.push({
       id: best.id,
       name: best.name,
@@ -153,9 +156,28 @@ function mergeChats(
     } else if (best.org_id && orgIds.has(best.org_id)) {
       chats.push({ chat_id: chatId, organisation: best.org_id });
     }
-    // Skip if neither valid person nor org
+    // Skip if neither valid person nor org — handled by fallback below
   }
-  
+
+  return chats;
+}
+
+/**
+ * Ensure every input chat appears in output — fallback for any missed chats
+ */
+export function ensureAllChats(
+  chats: ChatOutput[],
+  allChatIds: string[],
+  orgs: Organisation[]
+): ChatOutput[] {
+  const assigned = new Set(chats.map(c => c.chat_id));
+  const fallbackOrg = orgs[0]?.id ?? 'home';
+
+  for (const chatId of allChatIds) {
+    if (!assigned.has(chatId)) {
+      chats.push({ chat_id: chatId, organisation: fallbackOrg });
+    }
+  }
   return chats;
 }
 
@@ -307,10 +329,21 @@ function mergeLoops(batches: BatchOutput[]): OpenLoop[] {
 /**
  * Merge all batch outputs into final structure
  */
-export function mergeBatches(batches: BatchOutput[], seed: Seed): MergedOutput {
+export function mergeBatches(batches: BatchOutput[], seed: Seed, allChatIds?: string[]): MergedOutput {
   const people = mergeCirclesAndLinks(batches, seed);
   const organisations = mergeOrgs(batches);
-  const chats = mergeChats(batches, organisations);
+  const orgIds = new Set(organisations.map(o => o.id));
+
+  // Strip person links referencing orgs that didn't survive the merge
+  for (const person of people) {
+    if (person.links) {
+      person.links = person.links.filter(l => orgIds.has(l.organisation));
+      if (person.links.length === 0) delete person.links;
+    }
+  }
+
+  let chats = mergeChats(batches, organisations);
+  if (allChatIds) chats = ensureAllChats(chats, allChatIds, organisations);
   const goals = mergeGoals(batches);
   const loops = mergeLoops(batches);
   
